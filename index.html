@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAPI蛍光法プラスミド濃度測定 SOP v2.0</title>
+
+  <style>
+    /* --------------------------------------------------------
+       CSS CUSTOM PROPERTIES (Design Tokens)
+       -------------------------------------------------------- */
+    :root {
+      /* Primary brand: Logomix Bio green */
+      --color-primary:        #2E7D32;
+      --color-primary-light:  #60AD5E;
+      --color-primary-dark:   #005005;
+      --color-primary-bg:     #E8F5E9;
+
+      /* Alert palette */
+      --color-important:      #1565C0;
+      --color-important-bg:   #E3F2FD;
+      --color-tip:            #2E7D32;
+      --color-tip-bg:         #E8F5E9;
+      --color-caution:        #E65100;
+      --color-caution-bg:     #FFF3E0;
+
+      /* Neutral palette */
+      --color-bg:             #FFFFFF;
+      --color-surface:        #F8F9FA;
+      --color-border:         #DEE2E6;
+      --color-text:           #212529;
+      --color-text-secondary: #6C757D;
+      --color-text-muted:     #ADB5BD;
+
+      /* Typography */
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+      --font-size-base:   16px;
+      --font-size-sm:     14px;
+      --font-size-xs:     12px;
+      --font-size-lg:     18px;
+      --font-size-xl:     20px;
+      --font-size-2xl:    24px;
+      --font-size-3xl:    32px;
+      --line-height:      1.6;
+
+      /* Spacing scale (4px base) */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-7: 32px;
+      --space-8: 40px;
+      --space-9: 48px;
+      --space-10: 64px;
+
+      /* Layout */
+      --max-width:   860px;
+      --nav-height:  56px;
+      --border-radius: 6px;
+      --border-radius-sm: 4px;
+      --border-radius-lg: 8px;
+      --border-radius-pill: 100px;
+
+      /* Shadows */
+      --shadow-sm:  0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md:  0 2px 8px rgba(0,0,0,0.08);
+      --shadow-lg:  0 4px 16px rgba(0,0,0,0.10);
+
+      /* Transitions */
+      --transition-fast: 150ms ease;
+      --transition-base: 250ms ease;
+
+      /* Step indicator sizing */
+      --step-circle-size: 30px;
+      --step-line-width: 2px;
+    }
+
+
+    /* --------------------------------------------------------
+       CSS RESET
+       -------------------------------------------------------- */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: var(--font-size-base);
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(var(--nav-height) + var(--space-4));
+    }
+
+    body {
+      font-family: var(--font-family);
+      line-height: var(--line-height);
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: var(--color-primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+
+    /* --------------------------------------------------------
+       NAVIGATION (Sticky Top Bar)
+       -------------------------------------------------------- */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav__inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-6);
+      display: flex;
+      align-items: center;
+      height: var(--nav-height);
+      gap: var(--space-4);
+    }
+
+    .nav__brand {
+      font-weight: 700;
+      font-size: var(--font-size-sm);
+      color: var(--color-primary);
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+    }
+
+    .nav__toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-sm);
+      padding: var(--space-1) var(--space-2);
+      cursor: pointer;
+      font-size: var(--font-size-lg);
+      line-height: 1;
+      color: var(--color-text);
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      list-style: none;
+      flex: 1;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .nav__links::-webkit-scrollbar { display: none; }
+
+    .nav__links li a {
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--border-radius-sm);
+      transition: color var(--transition-fast), background var(--transition-fast);
+      letter-spacing: 0.02em;
+    }
+
+    .nav__links li a:hover {
+      color: var(--color-primary);
+      background: var(--color-primary-bg);
+      text-decoration: none;
+    }
+
+    .nav__actions {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-family: var(--font-family);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--border-radius-sm);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .btn--primary {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+
+    .btn--primary:hover {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+      color: #fff;
+    }
+
+
+    /* --------------------------------------------------------
+       MOBILE NAV COLLAPSE
+       -------------------------------------------------------- */
+    @media (max-width: 768px) {
+      .nav__toggle {
+        display: block;
+      }
+
+      .nav__links {
+        display: none;
+        position: absolute;
+        top: var(--nav-height);
+        left: 0;
+        right: 0;
+        background: var(--color-bg);
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: var(--shadow-md);
+        flex-direction: column;
+        padding: var(--space-3) var(--space-6);
+        gap: var(--space-1);
+      }
+
+      .nav__links.is-open {
+        display: flex;
+      }
+
+      .nav__links li a {
+        display: block;
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--font-size-sm);
+      }
+    }
+
+
+    /* --------------------------------------------------------
+       MAIN CONTENT CONTAINER
+       -------------------------------------------------------- */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: var(--space-6) var(--space-6) var(--space-8);
+    }
+
+
+    /* --------------------------------------------------------
+       HEADER / HERO
+       -------------------------------------------------------- */
+    .header {
+      text-align: center;
+      padding: var(--space-6) 0 var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: var(--space-6);
+    }
+
+    .header__kit-badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-primary);
+      background: var(--color-primary-bg);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--border-radius-pill);
+      margin-bottom: var(--space-3);
+    }
+
+    .header__title {
+      font-size: clamp(1.5rem, 3.5vw, var(--font-size-3xl));
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      margin-bottom: var(--space-1);
+    }
+
+    .header__subtitle {
+      font-size: var(--font-size-base);
+      color: var(--color-text-secondary);
+      font-weight: 400;
+      margin-bottom: var(--space-3);
+    }
+
+    .header__meta {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .header__meta span + span::before {
+      content: "\00B7";
+      margin: 0 var(--space-2);
+    }
+
+
+    /* --------------------------------------------------------
+       SECTION HEADINGS
+       -------------------------------------------------------- */
+    .section-heading {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: 2px solid var(--color-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .part-heading {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      margin-top: var(--space-7);
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .part-heading__badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      color: #fff;
+      background: var(--color-primary);
+      border-radius: var(--border-radius-sm);
+      padding: var(--space-1) var(--space-2);
+      min-width: 28px;
+    }
+
+    .part-time {
+      font-size: var(--font-size-sm);
+      font-weight: 400;
+      color: var(--color-text-muted);
+    }
+
+
+    /* --------------------------------------------------------
+       PROTOCOL STEPS
+       -------------------------------------------------------- */
+    .steps {
+      position: relative;
+      padding-left: calc(var(--step-circle-size) + var(--space-5));
+    }
+
+    .steps::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: calc(var(--step-circle-size) / 2);
+      bottom: 0;
+      width: var(--step-line-width);
+      background: var(--color-border);
+    }
+
+    .step {
+      position: relative;
+      padding-bottom: var(--space-4);
+    }
+
+    .step:last-child {
+      padding-bottom: 0;
+    }
+
+    .step__indicator {
+      position: absolute;
+      left: calc(-1 * var(--step-circle-size) - var(--space-5));
+      top: 0;
+      width: var(--step-circle-size);
+      height: var(--step-circle-size);
+      border-radius: 50%;
+      background: var(--color-bg);
+      border: var(--step-line-width) solid var(--color-primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      color: var(--color-primary);
+      z-index: 1;
+      transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+    }
+
+    .step.is-checked .step__indicator {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+
+    .step__title {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+    }
+
+    .step__body {
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+    }
+
+    .step__body ul,
+    .step__body ol {
+      padding-left: var(--space-6);
+      margin: var(--space-2) 0;
+    }
+
+    .step__body li {
+      margin-bottom: var(--space-1);
+    }
+
+    .step__body li::marker {
+      color: var(--color-primary-light);
+    }
+
+    .step__body p {
+      margin-bottom: var(--space-2);
+    }
+
+    .step__body p:last-child {
+      margin-bottom: 0;
+    }
+
+
+    /* --------------------------------------------------------
+       CHECKBOX
+       -------------------------------------------------------- */
+    .step-checkbox {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .step-checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      cursor: pointer;
+      user-select: none;
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      padding: var(--space-1) 0;
+    }
+
+    .step-checkbox-label__box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--color-border);
+      border-radius: var(--border-radius-sm);
+      background: var(--color-bg);
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .step-checkbox-label__box svg {
+      width: 12px;
+      height: 12px;
+      stroke: #fff;
+      stroke-width: 3;
+      fill: none;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all var(--transition-fast);
+    }
+
+    .step-checkbox:checked + .step-checkbox-label .step-checkbox-label__box {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .step-checkbox:checked + .step-checkbox-label .step-checkbox-label__box svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .step-checkbox:focus-visible + .step-checkbox-label .step-checkbox-label__box {
+      outline: 2px solid var(--color-primary-light);
+      outline-offset: 2px;
+    }
+
+
+    /* --------------------------------------------------------
+       TABLES
+       -------------------------------------------------------- */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: var(--space-3) 0;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--color-border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-size-xs);
+    }
+
+    thead th {
+      background: var(--color-primary);
+      color: #fff;
+      font-weight: 600;
+      text-align: left;
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--color-surface);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr.table-total td {
+      font-weight: 700;
+      border-top: 2px solid var(--color-primary-light);
+      background: var(--color-primary-bg);
+    }
+
+    .badge-included {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      padding: 2px var(--space-2);
+      border-radius: var(--border-radius-pill);
+      background: var(--color-tip-bg);
+      color: var(--color-tip);
+    }
+
+    .badge-not-included {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      padding: 2px var(--space-2);
+      border-radius: var(--border-radius-pill);
+      background: #FFF3E0;
+      color: var(--color-caution);
+    }
+
+
+    /* --------------------------------------------------------
+       ALERT BOXES
+       -------------------------------------------------------- */
+    .alert {
+      border-radius: var(--border-radius);
+      padding: var(--space-3) var(--space-4);
+      margin: var(--space-3) 0;
+      font-size: var(--font-size-xs);
+      line-height: 1.55;
+      display: flex;
+      gap: var(--space-3);
+      align-items: flex-start;
+    }
+
+    .alert__icon {
+      flex-shrink: 0;
+      font-size: var(--font-size-base);
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    .alert__label {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: var(--font-size-xs);
+      margin-bottom: var(--space-1);
+    }
+
+    .alert--important {
+      background: var(--color-important-bg);
+      border-left: 4px solid var(--color-important);
+      color: #0D47A1;
+    }
+    .alert--important .alert__icon { color: var(--color-important); }
+
+    .alert--tip {
+      background: var(--color-tip-bg);
+      border-left: 4px solid var(--color-tip);
+      color: #1B5E20;
+    }
+    .alert--tip .alert__icon { color: var(--color-tip); }
+
+    .alert--caution {
+      background: var(--color-caution-bg);
+      border-left: 4px solid var(--color-caution);
+      color: #BF360C;
+    }
+    .alert--caution .alert__icon { color: var(--color-caution); }
+
+
+    /* --------------------------------------------------------
+       TIME BADGES
+       -------------------------------------------------------- */
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-primary-dark);
+      background: var(--color-primary-bg);
+      border: 1px solid var(--color-primary-light);
+      border-radius: var(--border-radius-pill);
+      padding: 2px var(--space-3);
+      cursor: pointer;
+      user-select: none;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .time-badge:hover {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+
+    .time-badge:active {
+      transform: scale(0.96);
+    }
+
+    .timer-overlay {
+      position: fixed;
+      bottom: var(--space-6);
+      right: var(--space-6);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      pointer-events: none;
+    }
+
+    .timer-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: var(--space-3) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      pointer-events: auto;
+      min-width: 220px;
+      animation: timer-slide-in 300ms ease forwards;
+    }
+
+    @keyframes timer-slide-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .timer-card.is-done {
+      border-color: var(--color-tip);
+      background: var(--color-tip-bg);
+      animation: timer-shake 0.4s ease-in-out infinite, timer-flash 1.2s ease-in-out infinite;
+    }
+
+    @keyframes timer-shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-3px); }
+      40% { transform: translateX(3px); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+    }
+
+    @keyframes timer-flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .timer-card__label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .timer-card__time {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .timer-card.is-done .timer-card__time {
+      color: var(--color-tip);
+    }
+
+    .timer-card__close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: var(--font-size-lg);
+      color: var(--color-text-muted);
+      padding: var(--space-1);
+      line-height: 1;
+      margin-left: auto;
+      transition: color var(--transition-fast);
+    }
+
+    .timer-card__close:hover {
+      color: var(--color-text);
+    }
+
+
+    /* --------------------------------------------------------
+       SECTION DIVIDER
+       -------------------------------------------------------- */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: var(--space-6) 0;
+    }
+
+
+    /* --------------------------------------------------------
+       PRINCIPLE BOX
+       -------------------------------------------------------- */
+    .principle-box {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: var(--space-4) var(--space-5);
+      margin: var(--space-4) 0 var(--space-6);
+      font-size: var(--font-size-sm);
+      line-height: 1.7;
+    }
+
+    .principle-box__title {
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      margin-bottom: var(--space-2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+
+    /* --------------------------------------------------------
+       FOOTER
+       -------------------------------------------------------- */
+    .footer {
+      border-top: 1px solid var(--color-border);
+      margin-top: var(--space-7);
+      padding: var(--space-5) 0 var(--space-4);
+      text-align: center;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .footer p {
+      margin-bottom: var(--space-1);
+    }
+
+    .footer__disclaimer {
+      display: inline-block;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-caution);
+      background: var(--color-caution-bg);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--border-radius-pill);
+      margin-top: var(--space-2);
+    }
+
+
+    /* --------------------------------------------------------
+       RESPONSIVE TWEAKS
+       -------------------------------------------------------- */
+    @media (max-width: 600px) {
+      :root {
+        --step-circle-size: 26px;
+        --nav-height: 50px;
+      }
+
+      .container {
+        padding: var(--space-4) var(--space-4) var(--space-6);
+      }
+
+      .header {
+        padding: var(--space-5) 0 var(--space-4);
+        margin-bottom: var(--space-5);
+      }
+
+      .steps {
+        padding-left: calc(var(--step-circle-size) + var(--space-4));
+      }
+
+      .step__indicator {
+        left: calc(-1 * var(--step-circle-size) - var(--space-4));
+        font-size: 10px;
+      }
+
+      .section-heading {
+        font-size: var(--font-size-xl);
+      }
+
+      .part-heading {
+        font-size: var(--font-size-lg);
+      }
+
+      table {
+        font-size: 11px;
+      }
+
+      thead th,
+      tbody td {
+        padding: var(--space-1) var(--space-2);
+      }
+
+      .timer-overlay {
+        bottom: var(--space-3);
+        right: var(--space-3);
+        left: var(--space-3);
+      }
+
+      .timer-card {
+        min-width: auto;
+      }
+    }
+
+
+    /* --------------------------------------------------------
+       ANALYSIS TOOL
+       -------------------------------------------------------- */
+    .atool { margin: var(--space-4) 0; }
+    .atool h3 {
+      font-size: var(--font-size-base); font-weight: 600;
+      color: var(--color-primary-dark); margin: var(--space-5) 0 var(--space-2);
+    }
+    .atool h3:first-child { margin-top: 0; }
+    .atool input[type="number"], .atool input[type="text"] {
+      width: 100%; padding: var(--space-1) var(--space-2);
+      border: 1px solid var(--color-border); border-radius: var(--border-radius-sm);
+      font-family: var(--font-family); font-size: var(--font-size-xs);
+      font-variant-numeric: tabular-nums; text-align: right;
+      transition: border-color var(--transition-fast);
+    }
+    .atool input[type="text"] { text-align: left; }
+    .atool input:focus { outline: none; border-color: var(--color-primary); }
+    .atool table input { width: 80px; }
+    .atool .btn-fit {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: var(--space-2) var(--space-5); margin: var(--space-3) 0;
+      font-size: var(--font-size-sm); font-weight: 600;
+      background: var(--color-primary); color: #fff; border: none;
+      border-radius: var(--border-radius); cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+    .atool .btn-fit:hover { background: var(--color-primary-dark); }
+    .atool .btn-fit:disabled { background: var(--color-text-muted); cursor: not-allowed; }
+    .atool .btn-secondary {
+      display: inline-flex; align-items: center; gap: var(--space-1);
+      padding: var(--space-1) var(--space-3);
+      font-size: var(--font-size-xs); font-weight: 600;
+      background: var(--color-bg); color: var(--color-text-secondary);
+      border: 1px solid var(--color-border); border-radius: var(--border-radius-sm);
+      cursor: pointer; transition: all var(--transition-fast);
+    }
+    .atool .btn-secondary:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .param-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: var(--space-2); margin: var(--space-3) 0;
+    }
+    .param-card {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--border-radius); padding: var(--space-2) var(--space-3);
+      text-align: center;
+    }
+    .param-card__label { font-size: var(--font-size-xs); color: var(--color-text-muted); font-weight: 500; }
+    .param-card__value {
+      font-size: var(--font-size-lg); font-weight: 700;
+      font-variant-numeric: tabular-nums; color: var(--color-text);
+    }
+    .param-card--pass { border-color: var(--color-tip); }
+    .param-card--pass .param-card__value { color: var(--color-tip); }
+    .param-card--fail { border-color: var(--color-caution); background: var(--color-caution-bg); }
+    .param-card--fail .param-card__value { color: var(--color-caution); }
+    .chart-container {
+      position: relative; width: 100%; max-width: 600px;
+      margin: var(--space-3) auto; border: 1px solid var(--color-border);
+      border-radius: var(--border-radius); overflow: hidden;
+    }
+    .chart-container canvas { width: 100%; display: block; }
+    td.qc-pass { color: var(--color-tip); font-weight: 600; }
+    td.qc-fail { color: var(--color-caution); font-weight: 600; }
+    td.qc-warn { color: #F57F17; font-weight: 600; }
+    @media print { .atool { display: none !important; } }
+
+
+    /* --------------------------------------------------------
+       PRINT STYLES
+       -------------------------------------------------------- */
+    @media print {
+      .nav,
+      .timer-overlay,
+      .step-checkbox,
+      .step-checkbox-label,
+      .time-badge,
+      .nav__actions,
+      .btn {
+        display: none !important;
+      }
+
+      html {
+        scroll-padding-top: 0;
+      }
+
+      body {
+        font-size: 10pt;
+        color: #000;
+      }
+
+      .container {
+        max-width: 100%;
+        padding: 0;
+      }
+
+      .header {
+        padding: 16pt 0 12pt;
+        margin-bottom: 12pt;
+      }
+
+      .part-section {
+        page-break-before: auto;
+        break-before: auto;
+      }
+
+      .part-heading {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+
+      .step {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .table-wrapper {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .alert {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .steps::before {
+        display: none;
+      }
+
+      .step__indicator {
+        border-color: #000;
+        color: #000;
+        position: static;
+        display: inline-flex;
+        margin-right: 6pt;
+      }
+
+      .steps {
+        padding-left: 0;
+      }
+
+      .step__title {
+        display: flex;
+        align-items: center;
+      }
+
+      .table-wrapper {
+        border: 1px solid #999;
+      }
+
+      thead th {
+        background: #ddd !important;
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .alert {
+        border: 1px solid #999;
+        background: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .footer {
+        page-break-before: avoid;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- STICKY NAV -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <span class="nav__brand">DAPI Plasmid Assay</span>
+      <button class="nav__toggle" onclick="toggleNav(this)" aria-expanded="false" aria-label="メニュー">&#9776;</button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#materials">材料</a></li>
+        <li><a href="#part1">DAPI分注</a></li>
+        <li><a href="#part2">検量線調製</a></li>
+        <li><a href="#part3">DNA分注</a></li>
+        <li><a href="#part4">測定</a></li>
+        <li><a href="#part5">データ解析</a></li>
+        <li><a href="#qc">品質管理</a></li>
+      </ul>
+      <div class="nav__actions">
+        <button class="btn" onclick="resetAllCheckboxes()">リセット</button>
+        <button class="btn btn--primary" onclick="window.print()">印刷</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header__kit-badge">Logomix Bio</div>
+      <h1 class="header__title">DAPI 蛍光法プラスミド濃度測定</h1>
+      <p class="header__subtitle">384-well ブラックウェルプレート / ARVO X</p>
+      <p class="header__meta">
+        <span>SOP v2.0</span>
+        <span>384-well / 40 &micro;L 系</span>
+        <span>Hands-on 約 30 分</span>
+      </p>
+    </header>
+
+    <!-- PRINCIPLE -->
+    <div class="principle-box">
+      <div class="principle-box__title">原理</div>
+      DAPI 0.08% 溶液とプラスミド希釈系列を等量混合し、最終 DAPI 濃度 0.04% で蛍光を測定する。
+      DAPI は二本鎖 DNA の副溝に結合し蛍光を発するため、RNA やゲノム DNA の夾雑に影響されにくい。
+      4PL（4-parameter logistic）モデルによる検量線から逆推定で濃度を算出する。
+    </div>
+
+    <!-- MATERIALS SECTION -->
+    <section id="materials">
+      <h2 class="section-heading">必要な材料</h2>
+
+      <h3 style="font-size: var(--font-size-base); font-weight: 600; margin-bottom: var(--space-2); color: var(--color-primary-dark);">試薬</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>試薬</th><th>仕様</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr><td>DAPI 0.08% 溶液</td><td>DW に溶解</td><td>等量混合で最終 0.04%</td></tr>
+            <tr><td>QIAvac 精製プラスミドストック</td><td>検量線用</td><td>NanoDrop で濃度確認済み</td></tr>
+            <tr><td>TE バッファー</td><td>10 mM Tris-HCl, 1 mM EDTA, pH 8.0</td><td>希釈系列作成用</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="font-size: var(--font-size-base); font-weight: 600; margin: var(--space-4) 0 var(--space-2); color: var(--color-primary-dark);">装置・器具</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>装置</th><th>型番 / 仕様</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td>PerkinElmer ARVO X</td><td>F355/F460 フィルター, 0.1 s</td><td>DAPI 蛍光測定</td></tr>
+            <tr><td>384-well ブラックウェルプレート</td><td>&mdash;</td><td>蛍光測定用</td></tr>
+            <tr><td>Integra Voyager 125</td><td>125 &micro;L 電動マルチチャンネル</td><td>希釈系列の移液・DAPI / 検量線 / TE 分注</td></tr>
+            <tr><td>Integra Voyager 12.5</td><td>12.5 &micro;L 電動マルチチャンネル</td><td>サンプル 2 &micro;L のプレート分注</td></tr>
+            <tr><td>Sureflo 15 mL リザーバー</td><td>Integra</td><td>DAPI / TE 溶液のリザーバー</td></tr>
+            <tr><td>Eppendorf プレートシェーカー</td><td>384 モード対応</td><td>攪拌</td></tr>
+            <tr><td>ピペット（手動）or ASSIST PLUS</td><td>&mdash;</td><td>ワーキングストック調製</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- PART 1: DAPI のプレート分注 -->
+    <section id="part1" class="part-section">
+      <h2 class="part-heading">
+        <span class="part-heading__badge">1</span>
+        DAPI のプレート分注
+      </h2>
+
+      <div class="steps">
+
+        <div class="step" id="step-1">
+          <div class="step__indicator">1</div>
+          <div class="step__title"><span>DAPI 溶液の分注</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-1" onchange="onCheckboxChange(this, 'step-1')">
+            <label class="step-checkbox-label" for="chk-1">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <ol>
+              <li>Sureflo 15 mL リザーバーに DAPI 0.08% 溶液を入れる</li>
+              <li>Integra Voyager 125 を使用し、384-well プレートの<strong>使用するウェルすべて</strong>に DAPI 0.08% を <strong>20 &micro;L</strong> ずつ分注する</li>
+            </ol>
+            <div class="alert alert--important">
+              <div class="alert__icon">&#9888;&#65039;</div>
+              <div>
+                <div class="alert__label">重要</div>
+                検量線（24 ウェル）+ ブランク（3 ウェル）+ サンプル分のウェルすべてに分注すること。DNA は後から加える。
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.steps -->
+
+      <!-- Plate Layout -->
+      <div style="margin-top: var(--space-4);">
+        <h3 style="font-size: var(--font-size-base); font-weight: 600; margin-bottom: var(--space-2); color: var(--color-primary-dark);">プレートレイアウト概要</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>用途</th><th>ウェル数</th><th>備考</th></tr></thead>
+            <tbody>
+              <tr><td>検量線 8 pts &times; 3 rep</td><td>24</td><td>固定</td></tr>
+              <tr><td>ブランク &times; 3 rep</td><td>3</td><td>TE のみ（DNA なし）</td></tr>
+              <tr><td>サンプル（dup）</td><td>最大 357 &rarr; 178 サンプル</td><td>384 &minus; 27 = 357 ウェル</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- PART 2: 検量線の調製 -->
+    <section id="part2" class="part-section">
+      <h2 class="part-heading">
+        <span class="part-heading__badge">2</span>
+        検量線の調製
+        <span class="part-time">（約 10 分）</span>
+      </h2>
+
+      <div class="steps">
+
+        <div class="step" id="step-2">
+          <div class="step__indicator">1</div>
+          <div class="step__title"><span>ワーキングストックの調製</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-2" onchange="onCheckboxChange(this, 'step-2')">
+            <label class="step-checkbox-label" for="chk-2">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <p>QIAvac 精製プラスミドストック（例: 426 ng/&micro;L）を TE で <strong>2 倍希釈</strong>し、ワーキングストック（213 ng/&micro;L）を調製する。</p>
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>試薬</th><th>量</th></tr></thead>
+                <tbody>
+                  <tr><td>プラスミドストック（426 ng/&micro;L）</td><td>25 &micro;L</td></tr>
+                  <tr><td>TE バッファー</td><td>25 &micro;L</td></tr>
+                  <tr class="table-total"><td>ワーキングストック（213 ng/&micro;L）</td><td>50 &micro;L</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="step-3">
+          <div class="step__indicator">2</div>
+          <div class="step__title"><span>希釈系列の作成</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-3" onchange="onCheckboxChange(this, 'step-3')">
+            <label class="step-checkbox-label" for="chk-3">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <p>ワーキングストックから TE で <strong>2.5 倍連続希釈 8 ポイント</strong>を作成する。</p>
+            <ol>
+              <li>Pt2〜Pt8 のチューブに TE <strong>30 &micro;L</strong> ずつ分注しておく</li>
+              <li>Integra Voyager 125 で Pt1 から 20 &micro;L を Pt2 へ移液し混合 &rarr; Pt2 から 20 &micro;L を Pt3 へ &rarr; … と順次繰り返す</li>
+            </ol>
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Point</th><th>希釈前液量</th><th>+移液</th><th>希釈後液量</th><th>濃度 (ng/&micro;L)</th><th>Post-DAPI (ng/&micro;L)</th></tr></thead>
+                <tbody>
+                  <tr><td>Pt1</td><td>50 &micro;L（WS）</td><td>&mdash;</td><td>30 &micro;L</td><td>213.00</td><td>106.50</td></tr>
+                  <tr><td>Pt2</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>85.20</td><td>42.60</td></tr>
+                  <tr><td>Pt3</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>34.08</td><td>17.04</td></tr>
+                  <tr><td>Pt4</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>13.63</td><td>6.82</td></tr>
+                  <tr><td>Pt5</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>5.45</td><td>2.73</td></tr>
+                  <tr><td>Pt6</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>2.18</td><td>1.09</td></tr>
+                  <tr><td>Pt7</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>0.87</td><td>0.44</td></tr>
+                  <tr><td>Pt8</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>50 &micro;L</td><td>0.35</td><td>0.17</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert alert--tip">
+              <div class="alert__icon">&#128161;</div>
+              <div>
+                <div class="alert__label">必要量まとめ</div>
+                <ul style="margin: 0; padding-left: var(--space-5);">
+                  <li>プラスミドストック: <strong>25 &micro;L</strong></li>
+                  <li>TE バッファー: <strong>235 &micro;L</strong>（WS 用 25 + 希釈用 30 &times; 7 = 210）</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.steps -->
+    </section>
+
+    <hr class="divider">
+
+    <!-- PART 3: プレートへの DNA 分注 -->
+    <section id="part3" class="part-section">
+      <h2 class="part-heading">
+        <span class="part-heading__badge">3</span>
+        プレートへの DNA 分注
+      </h2>
+
+      <div class="steps">
+
+        <div class="step" id="step-4">
+          <div class="step__indicator">1</div>
+          <div class="step__title"><span>検量線のプレート分注</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-4" onchange="onCheckboxChange(this, 'step-4')">
+            <label class="step-checkbox-label" for="chk-4">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <p>Integra Voyager 125 で各ポイント <strong>20 &micro;L</strong> を DAPI 入りウェルに分注する（トリプリケート &times; 8 ポイント = 24 ウェル）。</p>
+          </div>
+        </div>
+
+        <div class="step" id="step-5">
+          <div class="step__indicator">2</div>
+          <div class="step__title"><span>サンプルのプレート分注（プレート上で 10 倍希釈）</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-5" onchange="onCheckboxChange(this, 'step-5')">
+            <label class="step-checkbox-label" for="chk-5">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <p>サンプルは 384-well プレート上で直接 10 倍希釈する（デュプリケート）。</p>
+            <ol>
+              <li>Integra Voyager 125 で TE <strong>18 &micro;L</strong> を DAPI 入りサンプルウェルに分注する</li>
+              <li>Integra Voyager 12.5 で QIAvac 精製プラスミドサンプル <strong>2 &micro;L</strong> を各ウェルに添加する</li>
+            </ol>
+            <div class="alert alert--important">
+              <div class="alert__icon">&#9888;&#65039;</div>
+              <div>
+                <div class="alert__label">重要</div>
+                検量線とサンプルは必ず同一精製法のプラスミドを使用すること。異なる精製法（例: QIAvac 検量線で Miniprep サンプルを定量）では 67〜73% の系統的過小評価が生じる。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="step-6">
+          <div class="step__indicator">3</div>
+          <div class="step__title"><span>ブランクのプレート分注</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-6" onchange="onCheckboxChange(this, 'step-6')">
+            <label class="step-checkbox-label" for="chk-6">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <p>Integra Voyager 125 で TE <strong>20 &micro;L</strong> を DAPI 入りブランクウェルに分注する（トリプリケート）。</p>
+          </div>
+        </div>
+
+      </div><!-- /.steps -->
+
+      <div class="table-wrapper" style="margin-top: var(--space-4);">
+        <table>
+          <thead><tr><th>ウェル種別</th><th>DAPI 0.08%</th><th>TE</th><th>DNA</th><th>合計</th></tr></thead>
+          <tbody>
+            <tr><td>検量線</td><td>20 &micro;L</td><td>&mdash;</td><td>20 &micro;L（希釈系列）</td><td>40 &micro;L</td></tr>
+            <tr><td>サンプル</td><td>20 &micro;L</td><td>18 &micro;L</td><td>2 &micro;L（原液）</td><td>40 &micro;L</td></tr>
+            <tr><td>ブランク</td><td>20 &micro;L</td><td>20 &micro;L</td><td>&mdash;</td><td>40 &micro;L</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- PART 4: 測定 -->
+    <section id="part4" class="part-section">
+      <h2 class="part-heading">
+        <span class="part-heading__badge">4</span>
+        測定
+        <span class="part-time">（約 5 分）</span>
+      </h2>
+
+      <div class="steps">
+
+        <div class="step" id="step-7">
+          <div class="step__indicator">1</div>
+          <div class="step__title"><span>攪拌</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-7" onchange="onCheckboxChange(this, 'step-7')">
+            <label class="step-checkbox-label" for="chk-7">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <p>Eppendorf プレートシェーカーで攪拌する。</p>
+            <ul>
+              <li>384 モード</li>
+              <li>シェイク <strong>15 秒</strong></li>
+            </ul>
+            <span class="time-badge" onclick="startTimer(0.25, '攪拌')" role="button" tabindex="0" aria-label="15秒タイマー開始">&#9201; 15 sec</span>
+          </div>
+        </div>
+
+        <div class="step" id="step-8">
+          <div class="step__indicator">2</div>
+          <div class="step__title"><span>蛍光測定</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-8" onchange="onCheckboxChange(this, 'step-8')">
+            <label class="step-checkbox-label" for="chk-8">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <p>ARVO X で蛍光測定する。</p>
+            <ul>
+              <li>Excitation: F355</li>
+              <li>Emission: F460</li>
+              <li>Counting time: 0.1 s</li>
+            </ul>
+            <div class="alert alert--tip">
+              <div class="alert__icon">&#128161;</div>
+              <div>
+                <div class="alert__label">ヒント</div>
+                待機時間は不要 &mdash; 攪拌後すぐに測定可能（キネティクスで 30 分間フラット確認済み）。
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.steps -->
+    </section>
+
+    <hr class="divider">
+
+    <!-- PART 5: データ解析ツール -->
+    <section id="part5" class="part-section">
+      <h2 class="part-heading">
+        <span class="part-heading__badge">5</span>
+        データ解析ツール
+      </h2>
+      <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-2);">
+        y = D + (A &minus; D) / (1 + (x/C)<sup>B</sup>)
+      </p>
+
+      <div class="atool">
+
+        <!-- 5-1: Blank QC -->
+        <h3>1. ブランク値の確認</h3>
+        <p style="font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-bottom:var(--space-1);">
+          ブランクの蛍光値をペースト（1〜3 値、タブ or 改行区切り）
+        </p>
+        <textarea id="blankPaste" rows="2" style="width:100%;font-family:monospace;font-size:var(--font-size-xs);padding:var(--space-2);border:1px solid var(--color-border);border-radius:var(--border-radius-sm);resize:vertical;" placeholder="例: 1234&#9;1256&#9;1245"></textarea>
+        <div class="param-grid" id="blankResult" style="display:none;">
+          <div class="param-card"><div class="param-card__label">Mean</div><div class="param-card__value" id="blMean">&mdash;</div></div>
+          <div class="param-card"><div class="param-card__label">SD</div><div class="param-card__value" id="blSD">&mdash;</div></div>
+          <div class="param-card" id="blCVCard"><div class="param-card__label">CV%</div><div class="param-card__value" id="blCV">&mdash;</div></div>
+        </div>
+
+        <!-- 5-2: Calibration -->
+        <h3>2. 検量線データ入力</h3>
+        <p style="font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-bottom:var(--space-1);">
+          Excel から蛍光値をペースト（8 行 &times; 1〜3 列）
+        </p>
+        <textarea id="calPaste" rows="9" style="width:100%;font-family:monospace;font-size:var(--font-size-xs);padding:var(--space-2);border:1px solid var(--color-border);border-radius:var(--border-radius-sm);resize:vertical;" placeholder="Pt1 rep1&#9;Pt1 rep2&#9;Pt1 rep3&#10;Pt2 rep1&#9;Pt2 rep2&#9;Pt2 rep3&#10;...（8行）"></textarea>
+        <!-- Parsed preview -->
+        <div id="calPreview" style="display:none;">
+          <div class="table-wrapper" style="margin-top:var(--space-2);">
+            <table>
+              <thead id="calPreviewHead"></thead>
+              <tbody id="calPreviewBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <button class="btn-fit" onclick="runFit()">4PL フィット実行</button>
+
+        <!-- Fit results -->
+        <div id="fitResult" style="display:none;">
+          <div class="param-grid">
+            <div class="param-card"><div class="param-card__label">A (min)</div><div class="param-card__value" id="pA">&mdash;</div></div>
+            <div class="param-card"><div class="param-card__label">B (slope)</div><div class="param-card__value" id="pB">&mdash;</div></div>
+            <div class="param-card"><div class="param-card__label">C (EC50)</div><div class="param-card__value" id="pC">&mdash;</div></div>
+            <div class="param-card"><div class="param-card__label">D (max)</div><div class="param-card__value" id="pD">&mdash;</div></div>
+            <div class="param-card" id="r2Card"><div class="param-card__label">R&sup2;</div><div class="param-card__value" id="pR2">&mdash;</div></div>
+          </div>
+          <div class="chart-container"><canvas id="calChart" width="600" height="360"></canvas></div>
+        </div>
+
+        <!-- 5-3: Sample calculation -->
+        <h3>3. サンプル濃度算出</h3>
+        <p style="font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-bottom:var(--space-1);">
+          Excel からペースト（各行: [名前] 蛍光値1 [蛍光値2] [蛍光値3]）。名前列は省略可。1〜3 replicate 対応。
+        </p>
+        <textarea id="samplePaste" rows="6" style="width:100%;font-family:monospace;font-size:var(--font-size-xs);padding:var(--space-2);border:1px solid var(--color-border);border-radius:var(--border-radius-sm);resize:vertical;" placeholder="Sample1&#9;5678&#9;5690&#10;Sample2&#9;4567&#9;4580&#10;..."></textarea>
+        <button class="btn-fit" onclick="calcSamples()" style="margin-top:var(--space-2);">算出</button>
+        <div id="sampleResult" style="display:none;">
+          <div class="table-wrapper" style="margin-top:var(--space-2);">
+            <table>
+              <thead id="sampleHead"></thead>
+              <tbody id="sampleBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /.atool -->
+    </section>
+
+    <hr class="divider">
+
+    <!-- QC SECTION -->
+    <section id="qc">
+      <h2 class="section-heading">品質管理基準</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>項目</th><th>基準</th></tr></thead>
+          <tbody>
+            <tr><td>検量線 R&sup2;</td><td>&ge; 0.99</td></tr>
+            <tr><td>ブランク CV</td><td>&lt; 15%</td></tr>
+            <tr><td>サンプルデュプリケート CV</td><td>&lt; 15%</td></tr>
+            <tr><td>定量値</td><td>Quantifiable Range 内であること</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="font-size: var(--font-size-base); font-weight: 600; margin: var(--space-5) 0 var(--space-2); color: var(--color-primary-dark);">定量可能範囲</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>区分</th><th>Post-DAPI (ng/&micro;L)</th><th>Pre-DAPI 換算 (ng/&micro;L)</th></tr></thead>
+          <tbody>
+            <tr><td>定量下限</td><td>~2</td><td>~4</td></tr>
+            <tr><td>定量上限</td><td>~80</td><td>~160</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="alert alert--important">
+        <div class="alert__icon">&#9888;&#65039;</div>
+        <div>
+          <div class="alert__label">重要</div>
+          定量値が範囲外の場合は希釈倍率を調整して再測定すること。一般的な QIAvac 精製プラスミド（100〜500 ng/&micro;L）を 10 倍希釈すると 10〜50 ng/&micro;L（Pre-DAPI）となり、定量可能範囲内に収まる。
+        </div>
+      </div>
+
+      <div class="alert alert--tip">
+        <div class="alert__icon">&#128161;</div>
+        <div>
+          <div class="alert__label">ヒント</div>
+          NanoDrop クロスバリデーション推奨。DAPI 法と NanoDrop A260 値の相関を確認し、2 倍以上の乖離がある場合はサンプル品質または検量線に問題がある可能性を検討する。
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>参考：AI-0020 DAPI蛍光法プラスミド濃度測定プロトコル v2.0（Exp01〜Exp05 検討結果反映）</p>
+      <p>SOP v2.0 &middot; 最終更新：2026 年 3 月</p>
+      <div class="footer__disclaimer">研究使用限定</div>
+    </footer>
+
+  </main>
+
+  <div class="timer-overlay" id="timerOverlay"></div>
+
+
+  <script>
+    /* ============================================================
+       1. MOBILE NAVIGATION TOGGLE
+       ============================================================ */
+    function toggleNav(btn) {
+      var links = document.getElementById('navLinks');
+      var isOpen = links.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    document.getElementById('navLinks').addEventListener('click', function(e) {
+      if (e.target.tagName === 'A') {
+        this.classList.remove('is-open');
+        var toggle = document.querySelector('.nav__toggle');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+
+    /* ============================================================
+       2. CHECKBOX STATE MANAGEMENT
+       ============================================================ */
+    function onCheckboxChange(checkbox, stepId) {
+      var stepEl = document.getElementById(stepId);
+      if (!stepEl) return;
+      if (checkbox.checked) {
+        stepEl.classList.add('is-checked');
+      } else {
+        stepEl.classList.remove('is-checked');
+      }
+    }
+
+
+    /* ============================================================
+       3. RESET ALL CHECKBOXES
+       ============================================================ */
+    function resetAllCheckboxes() {
+      var checkboxes = document.querySelectorAll('.step-checkbox');
+      checkboxes.forEach(function(cb) {
+        cb.checked = false;
+        var stepEl = cb.closest('.step');
+        if (stepEl) stepEl.classList.remove('is-checked');
+      });
+    }
+
+
+    /* ============================================================
+       4. COUNTDOWN TIMER
+       ============================================================ */
+    var audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioCtx;
+    }
+
+    function playBeep() {
+      try {
+        var ctx = getAudioContext();
+        var frequencies = [660, 880, 1100];
+        frequencies.forEach(function(freq, i) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.value = 0.3;
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          var startTime = ctx.currentTime + i * 0.18;
+          osc.start(startTime);
+          osc.stop(startTime + 0.15);
+        });
+      } catch (e) {
+        /* Silently fail if audio not available */
+      }
+    }
+
+    var _wakeLock = null;
+    var _noSleepVideo = null;
+    var _activeTimers = 0;
+
+    function _createNoSleepVideo() {
+      var mp4 = 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAA' +
+        'OhtZGF0AAACrQYF//+p3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE0OCByMjY0MyA1YzY1NzA0IC0gSC' +
+        '4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxNSAtIGh0dHA6Ly93d3cudmlkZW9sYW4' +
+        'ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4' +
+        'MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3Jhbmd' +
+        'lPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bz' +
+        'a2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTEgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGh' +
+        'yZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2' +
+        'ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiP' +
+        'TEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3' +
+        'JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW4' +
+        '9MCBxcG1heD02OSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAAbWWIhAAr//7eAAAPHCPGLk/y' +
+        'z3MqGkKO0EbzCHEcqGBAAAADAAADAAADAH4gAAHCgAFMAIAABbhIHvP4AAADAADDQAAAAMA9YAAADAADDQAQAAAANH' +
+        'AAAAwAAGmAAAAMAAAMAAAMAAAMAAAMAAJaAAAAwAAGmAAAAMAAAMAAJoAAAHEAAAAwAAMNAAAAwAAGmAAAAMAAAMAAYoA' +
+        'AADAAAM0AAAAwAABhgAAAAwAAAAAAAAAAyAAAAwAABhiAAANpMDAQAAAQMAAAMBlEAAAAwAAAAAAAGKBiIQAAr//7cAAA' +
+        'PAAAMAAAADAAADAAADABAAAAMAAAMAAAADAAADAAFGAAADAAAAAykAAAAAAAAAAAAAA0gAAAMAAAAAAAAAAAAAAAAAAWY' +
+        'AAAAwAAAAAAAAAAAAAAAAAAAAAsAAAAMAAAAAAAAAAAAAAAAAAAABQAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
+        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAH+f/lwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
+        'AAAAAAAAAAAAAHAAAAB0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAACAAAAAAAAA+gAAAAAAAAAAAAAAAEAAAAAAQAA' +
+        'AAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAQAAAAAAgAAAAIAAAAAAAbm1kaWEAAAAgbWRo' +
+        'ZAAAAAAAAAAAAAAAAAA8AAAAYABVxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAAAAAAABa21pbmYAAAAU' +
+        'dm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAStzdGJsAAAAq3N0c2QA' +
+        'AAAAAAAAAQAAAJthdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAACAIAEgAAABIAAAAAAAAAAEAAAAAAAAAAAAAAAAA' +
+        'AAAAAAAAAAAAAAAAAAAAAAAY//8AAAAxYXZjQwFNQAr/4QAZZZ+BICAM5JrFAR8D4IAAAAMAIAAABkjx8WjAAAAAAA' +
+        'AAAAAUAAAAYHNidHQAAAAAAAAAAAAAAAAAAAAAAAAASHN0c3oAAAAAAAAAAAAAAAABAAAAFHN0c2MAAAAAAAAAAQAAAA' +
+        'EAAAABAAAAAQAAABRzdHNzAAAAAAAAAAEAAAABAAAAEHN0dHMAAAAAAAAAAAAAABBjdHRzAAAAAAAAAAAAAAGAQAA=';
+      var v = document.createElement('video');
+      v.setAttribute('playsinline', '');
+      v.setAttribute('muted', '');
+      v.setAttribute('loop', '');
+      v.style.cssText = 'position:fixed;top:-1px;left:-1px;width:1px;height:1px;opacity:0.01;pointer-events:none;';
+      v.src = mp4;
+      v.muted = true;
+      document.body.appendChild(v);
+      return v;
+    }
+
+    function acquireWakeLock() {
+      if ('wakeLock' in navigator && !_wakeLock) {
+        navigator.wakeLock.request('screen').then(function(lock) {
+          _wakeLock = lock;
+          _wakeLock.addEventListener('release', function() { _wakeLock = null; });
+        }).catch(function() {});
+      }
+      if (!_noSleepVideo) _noSleepVideo = _createNoSleepVideo();
+      _noSleepVideo.play().catch(function() {});
+    }
+
+    function releaseWakeLock() {
+      if (_wakeLock) { _wakeLock.release(); _wakeLock = null; }
+      if (_noSleepVideo) { _noSleepVideo.pause(); _noSleepVideo.remove(); _noSleepVideo = null; }
+    }
+
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'visible' && _activeTimers > 0) {
+        acquireWakeLock();
+      }
+    });
+
+    function startTimer(minutes, label) {
+      var overlay = document.getElementById('timerOverlay');
+      var endTime = Date.now() + minutes * 60 * 1000;
+
+      var card = document.createElement('div');
+      card.className = 'timer-card';
+
+      var labelEl = document.createElement('div');
+      labelEl.className = 'timer-card__label';
+      labelEl.textContent = label;
+
+      var timeEl = document.createElement('div');
+      timeEl.className = 'timer-card__time';
+      timeEl.textContent = formatTime(minutes * 60);
+
+      var closeBtn = document.createElement('button');
+      closeBtn.className = 'timer-card__close';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.setAttribute('aria-label', 'タイマーを閉じる');
+
+      card.appendChild(labelEl);
+      card.appendChild(timeEl);
+      card.appendChild(closeBtn);
+      overlay.appendChild(card);
+
+      _activeTimers++;
+      acquireWakeLock();
+      requestNotificationPermission();
+
+      var intervalId = setInterval(function() {
+        var remaining = Math.round((endTime - Date.now()) / 1000);
+        if (remaining <= 0) {
+          clearInterval(intervalId);
+          card.classList.add('is-done');
+          timeEl.textContent = '完了!';
+          playBeep();
+          showNotification(label);
+          _activeTimers--;
+          if (_activeTimers <= 0) { _activeTimers = 0; releaseWakeLock(); }
+        } else {
+          timeEl.textContent = formatTime(remaining);
+        }
+      }, 250);
+
+      closeBtn.addEventListener('click', function() {
+        clearInterval(intervalId);
+        card.remove();
+        _activeTimers--;
+        if (_activeTimers <= 0) { _activeTimers = 0; releaseWakeLock(); }
+      });
+    }
+
+    function requestNotificationPermission() {
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    }
+
+    function showNotification(label) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('タイマー完了', {
+          body: label + ' が完了しました',
+          icon: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏱</text></svg>',
+          tag: 'sop-timer-' + label
+        });
+      }
+    }
+
+    function formatTime(seconds) {
+      if (seconds < 0) seconds = 0;
+      var m = Math.floor(seconds / 60);
+      var s = seconds % 60;
+      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+
+    /* ============================================================
+       6. 4PL ANALYSIS TOOL
+       ============================================================ */
+    var CAL_CONC = [106.50, 42.60, 17.04, 6.82, 2.73, 1.09, 0.44, 0.17];
+    var fitParams = null;
+
+    /* ---- helpers ---- */
+    function parseRows(text) {
+      return text.trim().split(/\r?\n/).filter(function(l){ return l.trim(); })
+        .map(function(line){ return line.split(/\t/); });
+    }
+    function meanArr(arr) { return arr.reduce(function(a,b){return a+b;},0)/arr.length; }
+    function sdArr(arr) {
+      if (arr.length < 2) return 0;
+      var m = meanArr(arr);
+      return Math.sqrt(arr.reduce(function(s,v){return s+Math.pow(v-m,2);},0)/(arr.length-1));
+    }
+    function cvArr(arr) { var m = meanArr(arr); return m !== 0 ? (sdArr(arr)/Math.abs(m))*100 : 0; }
+
+    /* ---- 4PL core ---- */
+    function fourPL(x, a, b, c, d) {
+      return d + (a - d) / (1 + Math.pow(x / c, b));
+    }
+    function jacCols(x, a, b, c, d) {
+      var t = Math.pow(x / c, b), denom = 1 + t, ln_xc = Math.log(x / c);
+      return [1/denom, (a-d)*(-(t*ln_xc))/(denom*denom), (a-d)*(b*t)/(c*denom*denom), t/denom];
+    }
+    function solveLinear(A, b) {
+      var n = b.length;
+      var M = A.map(function(row, i){ return row.concat([b[i]]); });
+      for (var i = 0; i < n; i++) {
+        var piv = i;
+        for (var r = i+1; r < n; r++) if (Math.abs(M[r][i]) > Math.abs(M[piv][i])) piv = r;
+        if (piv !== i) { var tmp = M[i]; M[i] = M[piv]; M[piv] = tmp; }
+        var div = M[i][i] || 1e-12;
+        for (var k = i; k <= n; k++) M[i][k] /= div;
+        for (var r2 = 0; r2 < n; r2++) if (r2 !== i) {
+          var f = M[r2][i];
+          for (var k2 = i; k2 <= n; k2++) M[r2][k2] -= f * M[i][k2];
+        }
+      }
+      return M.map(function(row){ return row[n]; });
+    }
+    function fourPLFit(x, y) {
+      var n = x.length;
+      var a = Math.min.apply(null, y), d = Math.max.apply(null, y);
+      var c = Math.exp(x.reduce(function(s,v){return s+Math.log(v);},0)/n), b = 1.0, lam = 1e-3;
+      for (var it = 0; it < 500; it++) {
+        var J = [], r = [];
+        for (var i = 0; i < n; i++) { r[i] = y[i] - fourPL(x[i],a,b,c,d); J[i] = jacCols(x[i],a,b,c,d); }
+        var JTJ = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]], JTr = [0,0,0,0];
+        for (var i2 = 0; i2 < n; i2++) for (var p = 0; p < 4; p++) {
+          JTr[p] += J[i2][p]*r[i2];
+          for (var q = 0; q < 4; q++) JTJ[p][q] += J[i2][p]*J[i2][q];
+        }
+        for (var k = 0; k < 4; k++) JTJ[k][k] += lam;
+        var delta = solveLinear(JTJ, JTr);
+        var a2=a+delta[0], b2=b+delta[1], c2=c+delta[2], d2=d+delta[3];
+        if (!(c2>0)||!isFinite(c2)) c2 = Math.max(c*0.5, 1e-12);
+        var sseN=0, sseO=0;
+        for (var i3=0;i3<n;i3++){sseN+=Math.pow(y[i3]-fourPL(x[i3],a2,b2,c2,d2),2);sseO+=Math.pow(y[i3]-fourPL(x[i3],a,b,c,d),2);}
+        if (sseN<sseO){a=a2;b=b2;c=c2;d=d2;lam*=0.7;if(Math.abs(sseO-sseN)/Math.max(1,sseO)<1e-9)break;}
+        else lam*=2.0;
+      }
+      var sse=0, mn=y.reduce(function(s,v){return s+v;},0)/n, sst=0;
+      for(var i4=0;i4<n;i4++){sse+=Math.pow(y[i4]-fourPL(x[i4],a,b,c,d),2);sst+=Math.pow(y[i4]-mn,2);}
+      return {a:a,b:b,c:c,d:d,r2:sst>0?1-sse/sst:NaN};
+    }
+    function fourPLInv(yVal, a, b, c, d) {
+      var eps=1e-12, ylo=Math.min(a,d), yhi=Math.max(a,d);
+      var yy=Math.max(ylo+eps,Math.min(yhi-eps,yVal));
+      if(Math.abs(yy-d)<eps)return Infinity; if(Math.abs(yy-a)<eps)return 0;
+      var S=(a-d)/(yy-d)-1; if(!(S>0))return NaN;
+      return c*Math.pow(S,1.0/b);
+    }
+
+    /* ---- Blank: auto-update on input ---- */
+    document.getElementById('blankPaste').addEventListener('input', updateBlank);
+    function updateBlank() {
+      var text = document.getElementById('blankPaste').value;
+      var vals = text.split(/[\t\r\n,]+/).map(Number).filter(isFinite);
+      var el = document.getElementById('blankResult');
+      if (vals.length < 1) { el.style.display = 'none'; return; }
+      el.style.display = '';
+      var m = meanArr(vals);
+      document.getElementById('blMean').textContent = m.toFixed(1);
+      if (vals.length >= 2) {
+        var sd = sdArr(vals), cv = cvArr(vals);
+        document.getElementById('blSD').textContent = sd.toFixed(1);
+        document.getElementById('blCV').textContent = cv.toFixed(1) + '%';
+        document.getElementById('blCVCard').className = 'param-card' + (cv < 15 ? ' param-card--pass' : ' param-card--fail');
+      } else {
+        document.getElementById('blSD').textContent = '\u2014';
+        document.getElementById('blCV').textContent = 'n=1';
+        document.getElementById('blCVCard').className = 'param-card';
+      }
+    }
+
+    /* ---- Calibration: auto-preview on input ---- */
+    document.getElementById('calPaste').addEventListener('input', previewCal);
+    var calParsed = null; // [{reps:[], mean:, sd:, cv:}]
+    function previewCal() {
+      var rows = parseRows(document.getElementById('calPaste').value);
+      if (rows.length < 1) { document.getElementById('calPreview').style.display='none'; calParsed=null; return; }
+      var nRep = rows[0].length;
+      calParsed = [];
+      for (var i = 0; i < Math.min(rows.length, 8); i++) {
+        var nums = rows[i].map(Number).filter(isFinite);
+        if (nums.length < 1) continue;
+        calParsed.push({ reps: nums, mean: meanArr(nums), sd: nums.length >= 2 ? sdArr(nums) : 0, cv: nums.length >= 2 ? cvArr(nums) : NaN });
+      }
+      if (calParsed.length === 0) { document.getElementById('calPreview').style.display='none'; return; }
+      // Build preview table
+      nRep = Math.max.apply(null, calParsed.map(function(d){ return d.reps.length; }));
+      var hdr = '<tr><th>Point</th><th>Conc.</th>';
+      if (nRep > 1) for (var r = 1; r <= nRep; r++) hdr += '<th>Rep'+r+'</th>';
+      hdr += '<th>Mean</th>';
+      if (nRep > 1) hdr += '<th>CV%</th>';
+      hdr += '</tr>';
+      document.getElementById('calPreviewHead').innerHTML = hdr;
+      var body = '';
+      for (var j = 0; j < calParsed.length; j++) {
+        var d = calParsed[j];
+        body += '<tr><td>Pt'+(j+1)+'</td><td>'+CAL_CONC[j]+'</td>';
+        if (nRep > 1) {
+          for (var k = 0; k < d.reps.length; k++) body += '<td>'+d.reps[k].toFixed(0)+'</td>';
+          for (var pad = d.reps.length; pad < nRep; pad++) body += '<td></td>';
+        }
+        body += '<td><strong>'+d.mean.toFixed(1)+'</strong></td>';
+        if (nRep > 1) body += '<td class="'+(isFinite(d.cv) && d.cv<15?'qc-pass':isFinite(d.cv)?'qc-fail':'')+'">'+
+          (isFinite(d.cv) ? d.cv.toFixed(1)+'%' : '\u2014')+'</td>';
+        body += '</tr>';
+      }
+      document.getElementById('calPreviewBody').innerHTML = body;
+      document.getElementById('calPreview').style.display = '';
+    }
+
+    /* ---- Run 4PL fit ---- */
+    function runFit() {
+      if (!calParsed || calParsed.length < 4) { alert('検量線データを貼り付けてください（4 行以上）'); return; }
+      var x = [], y = [];
+      for (var i = 0; i < calParsed.length; i++) {
+        x.push(CAL_CONC[i]);
+        y.push(calParsed[i].mean);
+      }
+      var res = fourPLFit(x, y);
+      fitParams = res;
+      document.getElementById('pA').textContent = res.a.toFixed(2);
+      document.getElementById('pB').textContent = res.b.toFixed(4);
+      document.getElementById('pC').textContent = res.c.toFixed(4);
+      document.getElementById('pD').textContent = res.d.toFixed(2);
+      document.getElementById('pR2').textContent = res.r2.toFixed(6);
+      document.getElementById('r2Card').className = 'param-card' + (res.r2 >= 0.99 ? ' param-card--pass' : ' param-card--fail');
+      document.getElementById('fitResult').style.display = '';
+      drawChart(x, y, res);
+    }
+
+    /* ---- Chart ---- */
+    function drawChart(xData, yData, p) {
+      var canvas = document.getElementById('calChart');
+      var ctx = canvas.getContext('2d');
+      var dpr = window.devicePixelRatio || 1;
+      var W = 600, H = 360;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.scale(dpr, dpr);
+      var pad = {t:20,r:20,b:50,l:60}, cw = W-pad.l-pad.r, ch = H-pad.t-pad.b;
+      ctx.clearRect(0,0,W,H); ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
+      var xMin=0.1,xMax=200,logMin=Math.log10(xMin),logMax=Math.log10(xMax);
+      var allY=yData.slice();
+      for(var xx=logMin;xx<=logMax;xx+=0.1) allY.push(fourPL(Math.pow(10,xx),p.a,p.b,p.c,p.d));
+      var yMin=Math.min.apply(null,allY)*0.9, yMax=Math.max.apply(null,allY)*1.1;
+      function toX(v){return pad.l+(Math.log10(v)-logMin)/(logMax-logMin)*cw;}
+      function toY(v){return pad.t+ch-(v-yMin)/(yMax-yMin)*ch;}
+      ctx.strokeStyle='#eee';ctx.lineWidth=1;
+      [0.1,1,10,100].forEach(function(xv){var px=toX(xv);ctx.beginPath();ctx.moveTo(px,pad.t);ctx.lineTo(px,pad.t+ch);ctx.stroke();});
+      ctx.strokeStyle='#ccc';ctx.beginPath();ctx.moveTo(pad.l,pad.t+ch);ctx.lineTo(pad.l+cw,pad.t+ch);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,pad.t+ch);ctx.stroke();
+      ctx.fillStyle='#666';ctx.font='11px sans-serif';ctx.textAlign='center';
+      [0.1,1,10,100].forEach(function(xv){ctx.fillText(xv,toX(xv),pad.t+ch+16);});
+      ctx.fillText('Post-DAPI concentration (ng/\u00B5L)',pad.l+cw/2,H-6);
+      // Y-axis tick labels
+      var yTicks = (function(){
+        var range = yMax - yMin;
+        var raw = range / 5;
+        var mag = Math.pow(10, Math.floor(Math.log10(raw)));
+        var nice = [1,2,5,10].map(function(m){return m*mag;});
+        var step = nice.reduce(function(best,s){return Math.abs(s-raw)<Math.abs(best-raw)?s:best;});
+        var ticks = [];
+        var first = Math.ceil(yMin/step)*step;
+        for (var t = first; t <= yMax; t += step) ticks.push(t);
+        return ticks;
+      })();
+      ctx.textAlign='right'; ctx.textBaseline='middle';
+      ctx.strokeStyle='#f0f0f0'; ctx.lineWidth=0.5;
+      yTicks.forEach(function(yv){
+        var py=toY(yv);
+        ctx.fillText(yv >= 1000 ? (yv/1000).toFixed(0)+'k' : yv >= 1 ? yv.toFixed(0) : yv.toFixed(2), pad.l-6, py);
+        ctx.beginPath();ctx.moveTo(pad.l,py);ctx.lineTo(pad.l+cw,py);ctx.stroke();
+      });
+      ctx.save();ctx.translate(14,pad.t+ch/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Fluorescence',0,0);ctx.restore();
+      // Quantifiable range
+      ctx.fillStyle='rgba(46,125,50,0.06)';var qL=toX(2),qR=toX(80);ctx.fillRect(qL,pad.t,qR-qL,ch);
+      ctx.fillStyle='rgba(46,125,50,0.4)';ctx.font='10px sans-serif';ctx.fillText('\u5b9a\u91cf\u53ef\u80fd\u7bc4\u56f2',(qL+qR)/2,pad.t+14);
+      // Curve
+      ctx.strokeStyle='#2E7D32';ctx.lineWidth=2;ctx.beginPath();
+      for(var i=0;i<=200;i++){var lx=logMin+(logMax-logMin)*i/200;var xv2=Math.pow(10,lx);var yv=fourPL(xv2,p.a,p.b,p.c,p.d);var px2=toX(xv2),py2=toY(yv);if(i===0)ctx.moveTo(px2,py2);else ctx.lineTo(px2,py2);}
+      ctx.stroke();
+      // Points
+      ctx.fillStyle='#005005';
+      for(var j=0;j<xData.length;j++){ctx.beginPath();ctx.arc(toX(xData[j]),toY(yData[j]),4,0,Math.PI*2);ctx.fill();}
+    }
+
+    /* ---- Sample: parse + calc ---- */
+    function calcSamples() {
+      if (!fitParams) { alert('\u5148\u306b 4PL \u30d5\u30a3\u30c3\u30c8\u3092\u5b9f\u884c\u3057\u3066\u304f\u3060\u3055\u3044'); return; }
+      var rows = parseRows(document.getElementById('samplePaste').value);
+      if (rows.length === 0) { alert('\u30b5\u30f3\u30d7\u30eb\u30c7\u30fc\u30bf\u3092\u8cbc\u308a\u4ed8\u3051\u3066\u304f\u3060\u3055\u3044'); return; }
+      var p = fitParams;
+      // Detect: first column text or number?
+      var hasName = rows.length > 0 && isNaN(Number(rows[0][0]));
+      var nRep = hasName ? rows[0].length - 1 : rows[0].length;
+      var showCV = nRep >= 2;
+      // Header
+      var hdr = '<tr><th>#</th><th>\u540d\u524d</th>';
+      if (nRep > 1) for (var r = 1; r <= nRep; r++) hdr += '<th>Rep'+r+'</th>';
+      hdr += '<th>\u86cd\u5149\u5024</th>';
+      if (showCV) hdr += '<th>CV%</th>';
+      hdr += '<th>Post-DAPI</th><th>\u539f\u6db2 (ng/\u00B5L)</th></tr>';
+      document.getElementById('sampleHead').innerHTML = hdr;
+      var body = '';
+      for (var i = 0; i < rows.length; i++) {
+        var cols = rows[i];
+        var name, vals;
+        if (hasName) { name = cols[0]; vals = cols.slice(1).map(Number).filter(isFinite); }
+        else { name = 'S'+(i+1); vals = cols.map(Number).filter(isFinite); }
+        if (vals.length < 1) continue;
+        var m = meanArr(vals);
+        var cv = vals.length >= 2 ? cvArr(vals) : NaN;
+        var postDAPI = fourPLInv(m, p.a, p.b, p.c, p.d);
+        var orig = (isFinite(postDAPI) && postDAPI > 0) ? postDAPI * 2 * 10 : NaN;
+        var inRange = isFinite(postDAPI) && postDAPI >= 2 && postDAPI <= 80;
+        body += '<tr><td>'+(i+1)+'</td><td>'+name+'</td>';
+        if (nRep > 1) {
+          for (var k = 0; k < vals.length; k++) body += '<td>'+vals[k].toFixed(0)+'</td>';
+          for (var pad2 = vals.length; pad2 < nRep; pad2++) body += '<td></td>';
+        }
+        body += '<td><strong>'+m.toFixed(1)+'</strong></td>';
+        if (showCV) body += '<td class="'+(isFinite(cv)?(cv<15?'qc-pass':'qc-fail'):'')+'">'+
+          (isFinite(cv) ? cv.toFixed(1)+'%' : '\u2014')+'</td>';
+        if (isFinite(postDAPI) && postDAPI > 0) {
+          body += '<td class="'+(inRange?'qc-pass':'qc-warn')+'">'+postDAPI.toFixed(2)+'</td>';
+          body += '<td class="'+(inRange?'qc-pass':'qc-warn')+'">'+orig.toFixed(1)+'</td>';
+        } else {
+          body += '<td class="qc-fail">OUT</td><td class="qc-fail">OUT</td>';
+        }
+        body += '</tr>';
+      }
+      document.getElementById('sampleBody').innerHTML = body;
+      document.getElementById('sampleResult').style.display = '';
+    }
+
+
+    /* ============================================================
+       KEYBOARD SUPPORT for time badges
+       ============================================================ */
+    document.addEventListener('keydown', function(e) {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('time-badge')) {
+        e.preventDefault();
+        e.target.click();
+      }
+    });
+  </script>
+
+</body>
+</html>
