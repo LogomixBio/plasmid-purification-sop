@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DAPI蛍光法プラスミド濃度測定 SOP v2.0</title>
+  <title>QIAvac エンドトキシンフリー プラスミド精製 SOP v1.0</title>
 
   <style>
     /* --------------------------------------------------------
@@ -512,6 +512,40 @@
       outline-offset: 2px;
     }
 
+
+    /* --------------------------------------------------------
+       FIGURES (embedded photos)
+       -------------------------------------------------------- */
+    .sop-figure {
+      margin: var(--space-4) 0;
+      padding: var(--space-3);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      text-align: center;
+    }
+    .sop-figure img {
+      max-width: 100%;
+      max-height: 320px;
+      height: auto;
+      border-radius: var(--border-radius-sm);
+      box-shadow: var(--shadow-sm);
+    }
+    .sop-figure figcaption {
+      margin-top: var(--space-2);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      text-align: left;
+    }
+    .sop-figure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-3);
+      margin: var(--space-4) 0;
+    }
+    .sop-figure-grid .sop-figure {
+      margin: 0;
+    }
 
     /* --------------------------------------------------------
        TABLES
@@ -1044,15 +1078,15 @@
   <!-- STICKY NAV -->
   <nav class="nav">
     <div class="nav__inner">
-      <span class="nav__brand">DAPI Plasmid Assay</span>
+      <span class="nav__brand">QIAvac Plasmid Purification</span>
       <button class="nav__toggle" onclick="toggleNav(this)" aria-expanded="false" aria-label="メニュー">&#9776;</button>
       <ul class="nav__links" id="navLinks">
         <li><a href="#materials">材料</a></li>
-        <li><a href="#part1">DAPI分注</a></li>
-        <li><a href="#part2">検量線調製</a></li>
-        <li><a href="#part3">DNA分注</a></li>
-        <li><a href="#part4">測定</a></li>
-        <li><a href="#part5">データ解析</a></li>
+        <li><a href="#part1">準備</a></li>
+        <li><a href="#part2">ライセート調製</a></li>
+        <li><a href="#part3">DNA結合</a></li>
+        <li><a href="#part4">洗浄・乾燥</a></li>
+        <li><a href="#part5">溶出・測定</a></li>
         <li><a href="#qc">品質管理</a></li>
       </ul>
       <div class="nav__actions">
@@ -1067,21 +1101,20 @@
     <!-- HEADER -->
     <header class="header">
       <div class="header__kit-badge">Logomix Bio</div>
-      <h1 class="header__title">DAPI 蛍光法プラスミド濃度測定</h1>
-      <p class="header__subtitle">384-well ブラックウェルプレート / ARVO X</p>
+      <h1 class="header__title">QIAvac エンドトキシンフリー プラスミド精製</h1>
+      <p class="header__subtitle">QIAprep 96 Plus Kit / MINI 96 / 96-well 系</p>
       <p class="header__meta">
-        <span>SOP v2.0</span>
-        <span>384-well / 40 &micro;L 系</span>
-        <span>Hands-on 約 30 分</span>
+        <span>SOP v1.0</span>
+        <span>96-well 並列</span>
+        <span>所要 約 3 時間</span>
       </p>
     </header>
 
     <!-- PRINCIPLE -->
     <div class="principle-box">
       <div class="principle-box__title">原理</div>
-      DAPI 0.08% 溶液とプラスミド希釈系列を等量混合し、最終 DAPI 濃度 0.04% で蛍光を測定する。
-      DAPI は二本鎖 DNA の副溝に結合し蛍光を発するため、RNA やゲノム DNA の夾雑に影響されにくい。
-      4PL（4-parameter logistic）モデルによる検量線から逆推定で濃度を算出する。
+      QIAprep 96 Plus キットを用いた、Deep Well 培養菌体からの 96-well 並列プラスミド精製。アルカリ溶解（P1/P2/S3）→ TurboFilter 96 でクリアランス → BB 添加でシリカ膜（Plasmid Plus 96）に DNA 結合 → ETR 洗浄でエンドトキシン除去 → PE 洗浄 → 乾燥 → TE 溶出。
+      MINI 96 マルチチャンネルピペットによる全工程の同時処理と、QIAvac 真空マニフォールドによるバキューム駆動が特徴。
     </div>
 
     <!-- MATERIALS SECTION -->
@@ -1091,46 +1124,74 @@
       <h3 style="font-size: var(--font-size-base); font-weight: 600; margin-bottom: var(--space-2); color: var(--color-primary-dark);">試薬</h3>
       <div class="table-wrapper">
         <table>
-          <thead><tr><th>試薬</th><th>仕様</th><th>備考</th></tr></thead>
+          <thead><tr><th>試薬・材料</th><th>メーカー / Kit / 型番</th><th>備考</th></tr></thead>
           <tbody>
-            <tr><td>DAPI 0.08% 溶液</td><td>DW に溶解</td><td>等量混合で最終 0.04%</td></tr>
-            <tr><td>QIAvac 精製プラスミドストック</td><td>検量線用</td><td>NanoDrop で濃度確認済み</td></tr>
-            <tr><td>TE バッファー</td><td>10 mM Tris-HCl, 1 mM EDTA, pH 8.0</td><td>希釈系列作成用</td></tr>
+            <tr><td>Buffer P1（RNase 入り）</td><td>QIAprep 96 Plus Kit / Cat: 16181</td><td>4℃保存（203 室共通棚）</td></tr>
+            <tr><td>Buffer P2</td><td>QIAprep 96 Plus Kit</td><td>使用前に沈殿確認、あれば 37℃ 溶解</td></tr>
+            <tr><td>Buffer S3</td><td>QIAprep 96 Plus Kit</td><td>&mdash;</td></tr>
+            <tr><td>Buffer BB</td><td>QIAprep 96 Plus Kit</td><td>使用前に沈殿確認、あれば 37℃ 溶解</td></tr>
+            <tr><td>Buffer ETR</td><td>QIAprep 96 Plus Kit</td><td>エンドトキシン除去</td></tr>
+            <tr><td>Buffer PE</td><td>QIAprep 96 Plus Kit</td><td>洗浄バッファー（エタノール添加済を確認）</td></tr>
+            <tr><td>TE buffer (pH 8.0)</td><td>ナカライテスク / Cat: 06890-54</td><td>溶出用</td></tr>
+            <tr><td>Plasmid Plus 96 plate</td><td>QIAprep 96 Plus Kit</td><td>シリカ膜カラム</td></tr>
+            <tr><td>TurboFilter 96 plate</td><td>QIAprep 96 Plus Kit</td><td>ライセートクリアランス</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h3 style="font-size: var(--font-size-base); font-weight: 600; margin: var(--space-4) 0 var(--space-2); color: var(--color-primary-dark);">装置・器具</h3>
+      <h3 style="font-size: var(--font-size-base); font-weight: 600; margin: var(--space-4) 0 var(--space-2); color: var(--color-primary-dark);">器具・消耗品</h3>
       <div class="table-wrapper">
         <table>
-          <thead><tr><th>装置</th><th>型番 / 仕様</th><th>用途</th></tr></thead>
+          <thead><tr><th>器具</th><th>メーカー / 型番</th><th>用途</th></tr></thead>
           <tbody>
-            <tr><td>PerkinElmer ARVO X</td><td>F355/F460 フィルター, 0.1 s</td><td>DAPI 蛍光測定</td></tr>
-            <tr><td>384-well ブラックウェルプレート</td><td>&mdash;</td><td>蛍光測定用</td></tr>
-            <tr><td>Integra Voyager 125</td><td>125 &micro;L 電動マルチチャンネル</td><td>希釈系列の移液・DAPI / 検量線 / TE 分注</td></tr>
-            <tr><td>Integra Voyager 12.5</td><td>12.5 &micro;L 電動マルチチャンネル</td><td>サンプル 2 &micro;L のプレート分注</td></tr>
-            <tr><td>Sureflo 15 mL リザーバー</td><td>Integra</td><td>DAPI / TE 溶液のリザーバー</td></tr>
-            <tr><td>Eppendorf プレートシェーカー</td><td>384 モード対応</td><td>攪拌</td></tr>
-            <tr><td>ピペット（手動）or ASSIST PLUS</td><td>&mdash;</td><td>ワーキングストック調製</td></tr>
+            <tr><td>Deep Well plate（培養済み）&times; 2</td><td>Ritter / Cat: 43001-0420</td><td>菌体培養（1 well あたり 培養液 1.5 mL → 2 枚で 1 サンプル）</td></tr>
+            <tr><td>丸穴 96 Deep Well Plate（新品）</td><td>Thermo / Cat: 278743</td><td>TurboFilter ろ過受け / 溶出受け（各 1 枚）</td></tr>
+            <tr><td>V 底 PCR チューブプレート</td><td>WATSON / Cat: 437-177C</td><td>プラスミド保存用</td></tr>
+            <tr><td>粘着テープ（QIAGEN Tape pads）</td><td>QIAGEN / Cat: 1018104</td><td>シーリング用</td></tr>
+            <tr><td>布テープ（Aera Seal）</td><td>EXCEL SCIENTIFIC / Cat: 3-9125-02</td><td>シーリング用</td></tr>
+            <tr><td>アルミシール（SureSeal AL）</td><td>BMBio / Cat: BMF-F-96-100</td><td>シーリング用</td></tr>
+            <tr><td>QIAvac 真空マニフォールド + トッププレート</td><td>QIAvac 96 / Cat: 19504</td><td>バキューム駆動</td></tr>
+            <tr><td>下駄プレート（自作 3D プリント）</td><td>&mdash;</td><td>マニフォールド内嵩上げ</td></tr>
+            <tr><td>廃液トレイ</td><td>QIAvac 96 / Cat: 19504</td><td>洗浄廃液受け</td></tr>
+            <tr><td>MINI 96 マルチチャンネルピペット</td><td>INTEGRA</td><td>全工程の同時分注</td></tr>
+            <tr><td>非滅菌チップ（200 &micro;L）</td><td>INTEGRA / Cat: 6433</td><td>溶出以外</td></tr>
+            <tr><td>滅菌チップ（200 &micro;L）</td><td>INTEGRA / Cat: 6434</td><td>溶出専用</td></tr>
+            <tr><td>リザーバー 150 mL / 300 mL</td><td>INTEGRA / Cat: 6318 / 6328</td><td>バッファー供給</td></tr>
+            <tr><td>遠心機（プレート対応）</td><td>&mdash;</td><td>4,000 rpm（≒ 2,100 &times; g）対応</td></tr>
+            <tr><td>NanoDrop 分光光度計</td><td>Thermo</td><td>濃度・純度測定</td></tr>
+            <tr><td>ボルテックス・キムタオル・ラップ</td><td>&mdash;</td><td>各種補助</td></tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="sop-figure-grid">
+        <figure class="sop-figure">
+          <img src="images/turbofilter-package.png" alt="TurboFilter 96 Plate パッケージ" loading="lazy">
+          <figcaption>TurboFilter 96 Plate（QIAGEN / Cat: 16181-CT）— 使用後は Lot No. を記録</figcaption>
+        </figure>
+        <figure class="sop-figure">
+          <img src="images/plasmid-plus-package.png" alt="Plasmid Plus 96 Plate パッケージ" loading="lazy">
+          <figcaption>Plasmid Plus 96 Plate（QIAGEN / Lot No. 例: 578010107）— 室温保存</figcaption>
+        </figure>
       </div>
     </section>
 
     <hr class="divider">
+    <hr class="divider">
 
-    <!-- PART 1: DAPI のプレート分注 -->
+    <!-- PART 1: 準備 -->
     <section id="part1" class="part-section">
       <h2 class="part-heading">
         <span class="part-heading__badge">1</span>
-        DAPI のプレート分注
+        準備
+        <span class="part-time">（約 15 分）</span>
       </h2>
 
       <div class="steps">
 
         <div class="step" id="step-1">
           <div class="step__indicator">1</div>
-          <div class="step__title"><span>DAPI 溶液の分注</span></div>
+          <div class="step__title"><span>バッファー確認</span></div>
           <div class="step__body">
             <input type="checkbox" class="step-checkbox" id="chk-1" onchange="onCheckboxChange(this, 'step-1')">
             <label class="step-checkbox-label" for="chk-1">
@@ -1139,53 +1200,20 @@
               </span>
               完了
             </label>
-            <ol>
-              <li>Sureflo 15 mL リザーバーに DAPI 0.08% 溶液を入れる</li>
-              <li>Integra Voyager 125 を使用し、384-well プレートの<strong>使用するウェルすべて</strong>に DAPI 0.08% を <strong>20 &micro;L</strong> ずつ分注する</li>
-            </ol>
-            <div class="alert alert--important">
+            <p>Buffer P2 と Buffer BB に沈殿がないかを確認する。沈殿があれば <strong>37℃ で溶解</strong>させてから使用する。</p>
+            <div class="alert alert--caution">
               <div class="alert__icon">&#9888;&#65039;</div>
               <div>
-                <div class="alert__label">重要</div>
-                検量線（24 ウェル）+ ブランク（3 ウェル）+ サンプル分のウェルすべてに分注すること。DNA は後から加える。
+                <div class="alert__label">注意</div>
+                P2 / BB はSDS含有のため低温で結晶化する。沈殿が残ったまま添加すると溶解効率が低下する。
               </div>
             </div>
           </div>
         </div>
 
-      </div><!-- /.steps -->
-
-      <!-- Plate Layout -->
-      <div style="margin-top: var(--space-4);">
-        <h3 style="font-size: var(--font-size-base); font-weight: 600; margin-bottom: var(--space-2); color: var(--color-primary-dark);">プレートレイアウト概要</h3>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>用途</th><th>ウェル数</th><th>備考</th></tr></thead>
-            <tbody>
-              <tr><td>検量線 8 pts &times; 3 rep</td><td>24</td><td>固定</td></tr>
-              <tr><td>ブランク &times; 3 rep</td><td>3</td><td>TE のみ（DNA なし）</td></tr>
-              <tr><td>サンプル（dup）</td><td>最大 357 &rarr; 178 サンプル</td><td>384 &minus; 27 = 357 ウェル</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <hr class="divider">
-
-    <!-- PART 2: 検量線の調製 -->
-    <section id="part2" class="part-section">
-      <h2 class="part-heading">
-        <span class="part-heading__badge">2</span>
-        検量線の調製
-        <span class="part-time">（約 10 分）</span>
-      </h2>
-
-      <div class="steps">
-
         <div class="step" id="step-2">
-          <div class="step__indicator">1</div>
-          <div class="step__title"><span>ワーキングストックの調製</span></div>
+          <div class="step__indicator">2</div>
+          <div class="step__title"><span>バッファー分注（リザーバー準備）</span></div>
           <div class="step__body">
             <input type="checkbox" class="step-checkbox" id="chk-2" onchange="onCheckboxChange(this, 'step-2')">
             <label class="step-checkbox-label" for="chk-2">
@@ -1194,23 +1222,35 @@
               </span>
               完了
             </label>
-            <p>QIAvac 精製プラスミドストック（例: 426 ng/&micro;L）を TE で <strong>2 倍希釈</strong>し、ワーキングストック（213 ng/&micro;L）を調製する。</p>
+            <p>各バッファーを遠沈管に分注後、MINI 96 専用リザーバーへ移して使用する。</p>
+            <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">前提: 菌体は Deep Well plate &times; 2 枚で培養。P1 は 2 枚に添加後、1 枚に統合。P2 以降は統合後の 1 枚に添加。下表は <strong>27 well 使用時</strong>の必要量目安。</p>
             <div class="table-wrapper">
               <table>
-                <thead><tr><th>試薬</th><th>量</th></tr></thead>
+                <thead><tr><th>バッファー</th><th>1 well (&micro;L)</th><th>使用回数</th><th>96 well 換算 (mL)</th><th>27 well 必要量 (mL)</th><th>リザーバー</th></tr></thead>
                 <tbody>
-                  <tr><td>プラスミドストック（426 ng/&micro;L）</td><td>25 &micro;L</td></tr>
-                  <tr><td>TE バッファー</td><td>25 &micro;L</td></tr>
-                  <tr class="table-total"><td>ワーキングストック（213 ng/&micro;L）</td><td>50 &micro;L</td></tr>
+                  <tr><td>Buffer P1</td><td>150</td><td>&times; 2（2 枚分）</td><td>28.8</td><td>8.4（7 + 3 mL）</td><td>150 mL</td></tr>
+                  <tr><td>Buffer P2</td><td>300</td><td>&times; 1</td><td>28.8</td><td>8.4（7 + 6 mL）</td><td>150 mL</td></tr>
+                  <tr><td>Buffer S3</td><td>300</td><td>&times; 1</td><td>28.8</td><td>8.4（7 + 6 mL）</td><td>150 mL</td></tr>
+                  <tr><td>Buffer BB</td><td>300</td><td>&times; 1</td><td>28.8</td><td>8.4（7 + 13 mL）</td><td>300 mL</td></tr>
+                  <tr><td>Buffer ETR</td><td>250</td><td>&times; 3</td><td>72.0</td><td>21（18 mL）</td><td>300 mL</td></tr>
+                  <tr><td>Buffer PE</td><td>250</td><td>&times; 6（2 回 &times; 3 添加）</td><td>144.0</td><td>42（24 mL &times; 2 回）</td><td>300 mL</td></tr>
+                  <tr><td>TE buffer</td><td>80</td><td>&times; 1</td><td>7.7</td><td>2.24（2 + 3 mL）</td><td>150 mL</td></tr>
                 </tbody>
               </table>
+            </div>
+            <div class="alert alert--tip">
+              <div class="alert__icon">&#128161;</div>
+              <div>
+                <div class="alert__label">ヒント</div>
+                3 列分など少数 well の場合、150 mL リザーバーを手で持ち斜めに傾けて溶液を端に寄せて吸引する。Buffer P2 は気泡が入りやすいので多めに入れる。
+              </div>
             </div>
           </div>
         </div>
 
         <div class="step" id="step-3">
-          <div class="step__indicator">2</div>
-          <div class="step__title"><span>希釈系列の作成</span></div>
+          <div class="step__indicator">3</div>
+          <div class="step__title"><span>遠心機の周知</span></div>
           <div class="step__body">
             <input type="checkbox" class="step-checkbox" id="chk-3" onchange="onCheckboxChange(this, 'step-3')">
             <label class="step-checkbox-label" for="chk-3">
@@ -1219,36 +1259,7 @@
               </span>
               完了
             </label>
-            <p>ワーキングストックから TE で <strong>2.5 倍連続希釈 8 ポイント</strong>を作成する。</p>
-            <ol>
-              <li>Pt2〜Pt8 のチューブに TE <strong>30 &micro;L</strong> ずつ分注しておく</li>
-              <li>Integra Voyager 125 で Pt1 から 20 &micro;L を Pt2 へ移液し混合 &rarr; Pt2 から 20 &micro;L を Pt3 へ &rarr; … と順次繰り返す</li>
-            </ol>
-            <div class="table-wrapper">
-              <table>
-                <thead><tr><th>Point</th><th>希釈前液量</th><th>+移液</th><th>希釈後液量</th><th>濃度 (ng/&micro;L)</th><th>Post-DAPI (ng/&micro;L)</th></tr></thead>
-                <tbody>
-                  <tr><td>Pt1</td><td>50 &micro;L（WS）</td><td>&mdash;</td><td>30 &micro;L</td><td>213.00</td><td>106.50</td></tr>
-                  <tr><td>Pt2</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>85.20</td><td>42.60</td></tr>
-                  <tr><td>Pt3</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>34.08</td><td>17.04</td></tr>
-                  <tr><td>Pt4</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>13.63</td><td>6.82</td></tr>
-                  <tr><td>Pt5</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>5.45</td><td>2.73</td></tr>
-                  <tr><td>Pt6</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>2.18</td><td>1.09</td></tr>
-                  <tr><td>Pt7</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>30 &micro;L</td><td>0.87</td><td>0.44</td></tr>
-                  <tr><td>Pt8</td><td>30 &micro;L（TE）</td><td>+20 &micro;L</td><td>50 &micro;L</td><td>0.35</td><td>0.17</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="alert alert--tip">
-              <div class="alert__icon">&#128161;</div>
-              <div>
-                <div class="alert__label">必要量まとめ</div>
-                <ul style="margin: 0; padding-left: var(--space-5);">
-                  <li>プラスミドストック: <strong>25 &micro;L</strong></li>
-                  <li>TE バッファー: <strong>235 &micro;L</strong>（WS 用 25 + 希釈用 30 &times; 7 = 210）</li>
-                </ul>
-              </div>
-            </div>
+            <p>本プロトコルでは遠心機を頻繁にスピンダウン用に使用する。同室の他作業者に使用予定を周知し、バランサー（プレート対応）の所在を確認しておく。</p>
           </div>
         </div>
 
@@ -1257,18 +1268,23 @@
 
     <hr class="divider">
 
-    <!-- PART 3: プレートへの DNA 分注 -->
-    <section id="part3" class="part-section">
+    <!-- PART 2: ライセート調製 -->
+    <section id="part2" class="part-section">
       <h2 class="part-heading">
-        <span class="part-heading__badge">3</span>
-        プレートへの DNA 分注
+        <span class="part-heading__badge">2</span>
+        ライセート調製
+        <span class="part-time">（約 30 分）</span>
       </h2>
+
+      <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-3);">
+        MINI 96 の吸引・吐出速度は基本 <strong>Speed 6</strong>。例外は本文中に記載。
+      </p>
 
       <div class="steps">
 
         <div class="step" id="step-4">
           <div class="step__indicator">1</div>
-          <div class="step__title"><span>検量線のプレート分注</span></div>
+          <div class="step__title"><span>菌体回収遠心</span></div>
           <div class="step__body">
             <input type="checkbox" class="step-checkbox" id="chk-4" onchange="onCheckboxChange(this, 'step-4')">
             <label class="step-checkbox-label" for="chk-4">
@@ -1277,13 +1293,26 @@
               </span>
               完了
             </label>
-            <p>Integra Voyager 125 で各ポイント <strong>20 &micro;L</strong> を DAPI 入りウェルに分注する（トリプリケート &times; 8 ポイント = 24 ウェル）。</p>
+            <ol>
+              <li>Deep Well plate（2 枚）を遠心機にセット（バランサー準備）</li>
+              <li><strong>4,000 rpm（≒ 2,100 &times; g）、5 分間、4〜10℃</strong> で遠心</li>
+              <li>遠心終了後、ゴミ箱上でデカントにより上清を除去（MINI 96 で 2 回回収後にデカント）</li>
+              <li>キムタオルでプレート上部の液を拭き取りながらプレートを起こす</li>
+            </ol>
+            <span class="time-badge" onclick="startTimer(5, '菌体回収遠心')" role="button" tabindex="0" aria-label="5分タイマー開始">&#9201; 5 min</span>
+            <div class="alert alert--caution">
+              <div class="alert__icon">&#9888;&#65039;</div>
+              <div>
+                <div class="alert__label">クロスコンタミ注意</div>
+                プレートを起こす際にウェル間で液が混ざらないよう、丁寧に拭き取る。
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="step" id="step-5">
           <div class="step__indicator">2</div>
-          <div class="step__title"><span>サンプルのプレート分注（プレート上で 10 倍希釈）</span></div>
+          <div class="step__title"><span>Buffer P1 添加・懸濁</span></div>
           <div class="step__body">
             <input type="checkbox" class="step-checkbox" id="chk-5" onchange="onCheckboxChange(this, 'step-5')">
             <label class="step-checkbox-label" for="chk-5">
@@ -1292,16 +1321,18 @@
               </span>
               完了
             </label>
-            <p>サンプルは 384-well プレート上で直接 10 倍希釈する（デュプリケート）。</p>
             <ol>
-              <li>Integra Voyager 125 で TE <strong>18 &micro;L</strong> を DAPI 入りサンプルウェルに分注する</li>
-              <li>Integra Voyager 12.5 で QIAvac 精製プラスミドサンプル <strong>2 &micro;L</strong> を各ウェルに添加する</li>
+              <li>Buffer P1 <strong>150 &micro;L</strong> を 2 枚のプレートそれぞれに加える（チップをウェル内に挿入しないこと、チップは継続使用）</li>
+              <li>粘着テープでシール</li>
+              <li>ボルテックスでペレットを完全に懸濁</li>
+              <li>スピンダウン</li>
+              <li>同じチップで 1 枚のプレートから全量吸引し、もう 1 枚へ統合（以降は 1 枚で進める）</li>
             </ol>
-            <div class="alert alert--important">
-              <div class="alert__icon">&#9888;&#65039;</div>
+            <div class="alert alert--tip">
+              <div class="alert__icon">&#128161;</div>
               <div>
-                <div class="alert__label">重要</div>
-                検量線とサンプルは必ず同一精製法のプラスミドを使用すること。異なる精製法（例: QIAvac 検量線で Miniprep サンプルを定量）では 67〜73% の系統的過小評価が生じる。
+                <div class="alert__label">ヒント</div>
+                リザーバーを手で持ち斜めに傾けて溶液を端に寄せると吸引しやすい。
               </div>
             </div>
           </div>
@@ -1309,7 +1340,7 @@
 
         <div class="step" id="step-6">
           <div class="step__indicator">3</div>
-          <div class="step__title"><span>ブランクのプレート分注</span></div>
+          <div class="step__title"><span>Buffer P2 添加・転倒混和</span></div>
           <div class="step__body">
             <input type="checkbox" class="step-checkbox" id="chk-6" onchange="onCheckboxChange(this, 'step-6')">
             <label class="step-checkbox-label" for="chk-6">
@@ -1318,39 +1349,32 @@
               </span>
               完了
             </label>
-            <p>Integra Voyager 125 で TE <strong>20 &micro;L</strong> を DAPI 入りブランクウェルに分注する（トリプリケート）。</p>
+            <ol>
+              <li>Buffer P2 <strong>300 &micro;L</strong> を加える（吐出速度を <strong>Speed 3</strong> に下げる、チップはウェル外で吐出）</li>
+              <li>粘着テープでシール</li>
+              <li><strong>6〜8 回転倒混和</strong></li>
+              <li>スピンダウン</li>
+            </ol>
+            <div class="alert alert--important">
+              <div class="alert__icon">&#9888;&#65039;</div>
+              <div>
+                <div class="alert__label">時間制限</div>
+                Buffer P2 添加後 <strong>5 分を超過しない</strong>こと（ゲノム DNA の不可逆変性確保）。次ステップへ速やかに進む。
+              </div>
+            </div>
+            <div class="alert alert--caution">
+              <div class="alert__icon">&#9888;&#65039;</div>
+              <div>
+                <div class="alert__label">注意</div>
+                Deep Well 上部に溶液が付着した場合、拭き取ってからシールする。
+              </div>
+            </div>
           </div>
         </div>
 
-      </div><!-- /.steps -->
-
-      <div class="table-wrapper" style="margin-top: var(--space-4);">
-        <table>
-          <thead><tr><th>ウェル種別</th><th>DAPI 0.08%</th><th>TE</th><th>DNA</th><th>合計</th></tr></thead>
-          <tbody>
-            <tr><td>検量線</td><td>20 &micro;L</td><td>&mdash;</td><td>20 &micro;L（希釈系列）</td><td>40 &micro;L</td></tr>
-            <tr><td>サンプル</td><td>20 &micro;L</td><td>18 &micro;L</td><td>2 &micro;L（原液）</td><td>40 &micro;L</td></tr>
-            <tr><td>ブランク</td><td>20 &micro;L</td><td>20 &micro;L</td><td>&mdash;</td><td>40 &micro;L</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <hr class="divider">
-
-    <!-- PART 4: 測定 -->
-    <section id="part4" class="part-section">
-      <h2 class="part-heading">
-        <span class="part-heading__badge">4</span>
-        測定
-        <span class="part-time">（約 5 分）</span>
-      </h2>
-
-      <div class="steps">
-
         <div class="step" id="step-7">
-          <div class="step__indicator">1</div>
-          <div class="step__title"><span>攪拌</span></div>
+          <div class="step__indicator">4</div>
+          <div class="step__title"><span>Buffer S3 中和・遠心</span></div>
           <div class="step__body">
             <input type="checkbox" class="step-checkbox" id="chk-7" onchange="onCheckboxChange(this, 'step-7')">
             <label class="step-checkbox-label" for="chk-7">
@@ -1359,18 +1383,19 @@
               </span>
               完了
             </label>
-            <p>Eppendorf プレートシェーカーで攪拌する。</p>
-            <ul>
-              <li>384 モード</li>
-              <li>シェイク <strong>15 秒</strong></li>
-            </ul>
-            <span class="time-badge" onclick="startTimer(0.25, '攪拌')" role="button" tabindex="0" aria-label="15秒タイマー開始">&#9201; 15 sec</span>
+            <ol>
+              <li>Buffer S3 <strong>300 &micro;L</strong> を加える</li>
+              <li>粘着テープでシール</li>
+              <li><strong>15 回転倒混和</strong>（プレートを縦向きに持ち、手前から奥への向きに変えると混和しやすい）</li>
+              <li>遠心: <strong>4,000 rpm、5 分間、室温（25℃）</strong>。バランサー準備、チップは継続使用</li>
+            </ol>
+            <span class="time-badge" onclick="startTimer(5, 'S3 中和遠心')" role="button" tabindex="0" aria-label="5分タイマー開始">&#9201; 5 min</span>
           </div>
         </div>
 
         <div class="step" id="step-8">
-          <div class="step__indicator">2</div>
-          <div class="step__title"><span>蛍光測定</span></div>
+          <div class="step__indicator">5</div>
+          <div class="step__title"><span>TurboFilter ろ過（ライセートクリアランス）</span></div>
           <div class="step__body">
             <input type="checkbox" class="step-checkbox" id="chk-8" onchange="onCheckboxChange(this, 'step-8')">
             <label class="step-checkbox-label" for="chk-8">
@@ -1379,17 +1404,111 @@
               </span>
               完了
             </label>
-            <p>ARVO X で蛍光測定する。</p>
-            <ul>
-              <li>Excitation: F355</li>
-              <li>Emission: F460</li>
-              <li>Counting time: 0.1 s</li>
-            </ul>
-            <div class="alert alert--tip">
-              <div class="alert__icon">&#128161;</div>
+            <ol>
+              <li>丸穴 96 Deep Well Plate（新品）を開封し、TurboFilter 96 plate を重ねる</li>
+              <li>真空マニフォールドに下表のとおりセット</li>
+              <li>同じチップでライセート（900 &micro;L）を <strong>300 &micro;L &times; 3 回</strong>に分けて全量アプライ（大きな沈殿物を吸わないこと）</li>
+              <li>吸引開始</li>
+              <li>ウェル内の溶液がなくなったら速やかに、ゆっくり常圧へ戻す（ホースは外さずスイッチを切る）</li>
+              <li>使用後の TurboFilter 96 plate はキムタオルの上に置きラップを被せて保管</li>
+            </ol>
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>セット順序（下から）</th><th>部品</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>下駄プレート（自作 3D プリント）</td></tr>
+                  <tr><td>2</td><td>キムタオル</td></tr>
+                  <tr><td>3</td><td>丸穴 96 Deep Well Plate</td></tr>
+                  <tr><td>4</td><td>トッププレート</td></tr>
+                  <tr><td>5</td><td>TurboFilter 96 plate</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <figure class="sop-figure">
+              <img src="images/kimtowel-setup.png" alt="マニフォールド内のキムタオル設置例" loading="lazy">
+              <figcaption>マニフォールド底に敷くキムタオル（飛沫吸収・コンタミ防止）。下駄プレートの上に重ねる。</figcaption>
+            </figure>
+          </div>
+        </div>
+
+      </div><!-- /.steps -->
+    </section>
+
+    <hr class="divider">
+
+    <!-- PART 3: DNA 結合 -->
+    <section id="part3" class="part-section">
+      <h2 class="part-heading">
+        <span class="part-heading__badge">3</span>
+        DNA 結合
+        <span class="part-time">（約 15 分）</span>
+      </h2>
+
+      <div class="steps">
+
+        <div class="step" id="step-9">
+          <div class="step__indicator">1</div>
+          <div class="step__title"><span>Buffer BB 添加・混合</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-9" onchange="onCheckboxChange(this, 'step-9')">
+            <label class="step-checkbox-label" for="chk-9">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <ol>
+              <li>回収したライセート（900 &micro;L）に Buffer BB <strong>300 &micro;L</strong> を添加</li>
+              <li><strong>5 回ピペット混合</strong>（300 &micro;L、Speed 10、底部から吸い上げ、チップは継続使用）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="step" id="step-10">
+          <div class="step__indicator">2</div>
+          <div class="step__title"><span>Plasmid Plus 96 へのアプライ</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-10" onchange="onCheckboxChange(this, 'step-10')">
+            <label class="step-checkbox-label" for="chk-10">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <ol>
+              <li>廃液トレイに Plasmid Plus 96 plate を重ねる（吸引前から廃液が染み出すため、廃液トレイをセットしておく）</li>
+              <li>真空マニフォールドに下表のとおりセット</li>
+              <li>同じチップで、ライセート（1,200 &micro;L）を <strong>300 &micro;L &times; 4 回</strong>に分けて全量アプライ</li>
+              <li>吸引前に <strong>1〜2 分間静置</strong>（液が自然落下する）</li>
+              <li>素早く吸引開始</li>
+              <li>ウェル内の液がなくなった瞬間に、レギュレーターを回してゆっくり常圧へ戻す（発泡注意）</li>
+              <li>廃液トレイの廃液を捨てる</li>
+            </ol>
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>セット順序（下から）</th><th>部品</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>下駄プレート（自作 3D プリント）</td></tr>
+                  <tr><td>2</td><td>キムタオル</td></tr>
+                  <tr><td>3</td><td>廃液トレイ</td></tr>
+                  <tr><td>4</td><td>トッププレート</td></tr>
+                  <tr><td>5</td><td>Plasmid Plus 96 plate</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <span class="time-badge" onclick="startTimer(2, 'BB 静置')" role="button" tabindex="0" aria-label="2分タイマー開始">&#9201; 1〜2 min</span>
+            <div class="alert alert--caution">
+              <div class="alert__icon">&#9888;&#65039;</div>
               <div>
-                <div class="alert__label">ヒント</div>
-                待機時間は不要 &mdash; 攪拌後すぐに測定可能（キネティクスで 30 分間フラット確認済み）。
+                <div class="alert__label">コンタミ防止</div>
+                壁面上部に付着した飛沫はスピンダウンしない（クロスコンタミの原因）。
+              </div>
+            </div>
+            <div class="alert alert--important">
+              <div class="alert__icon">&#9888;&#65039;</div>
+              <div>
+                <div class="alert__label">重要</div>
+                各吸引ステップ後、<strong>廃液トレイの廃液は必ず破棄</strong>する（次ステップで溢れる）。
               </div>
             </div>
           </div>
@@ -1400,76 +1519,257 @@
 
     <hr class="divider">
 
-    <!-- PART 5: データ解析ツール -->
+    <!-- PART 4: 洗浄・乾燥 -->
+    <section id="part4" class="part-section">
+      <h2 class="part-heading">
+        <span class="part-heading__badge">4</span>
+        洗浄・乾燥
+        <span class="part-time">（約 25 分）</span>
+      </h2>
+
+      <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-3);">
+        マニフォールドのセット順は Part 3 ステップ 2 と同じ（廃液トレイ &rarr; トッププレート &rarr; Plasmid Plus 96）。
+      </p>
+
+      <div class="steps">
+
+        <div class="step" id="step-11">
+          <div class="step__indicator">1</div>
+          <div class="step__title"><span>ETR 洗浄（&times; 3 添加）</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-11" onchange="onCheckboxChange(this, 'step-11')">
+            <label class="step-checkbox-label" for="chk-11">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <ol>
+              <li>Plasmid Plus 96 plate と廃液トレイを重ねてマニフォールドにセット</li>
+              <li>Buffer ETR <strong>250 &micro;L &times; 3 回</strong>添加</li>
+              <li>素早く吸引（発泡注意、ゆっくり常圧へ戻す）</li>
+              <li>廃液トレイの廃液を捨てる</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="step" id="step-12">
+          <div class="step__indicator">2</div>
+          <div class="step__title"><span>PE 洗浄 1 回目（&times; 3 添加）</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-12" onchange="onCheckboxChange(this, 'step-12')">
+            <label class="step-checkbox-label" for="chk-12">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <ol>
+              <li>Plasmid Plus 96 plate と廃液トレイを重ねてマニフォールドにセット</li>
+              <li>Buffer PE <strong>250 &micro;L &times; 3 回</strong>添加（チップは次ステップで継続使用）</li>
+              <li>吸引開始</li>
+              <li>廃液トレイの廃液を捨てる</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="step" id="step-13">
+          <div class="step__indicator">3</div>
+          <div class="step__title"><span>PE 洗浄 2 回目（&times; 3 添加）</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-13" onchange="onCheckboxChange(this, 'step-13')">
+            <label class="step-checkbox-label" for="chk-13">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <ol>
+              <li>Plasmid Plus 96 plate と廃液トレイを重ねてマニフォールドにセット</li>
+              <li>Buffer PE <strong>250 &micro;L &times; 3 回</strong>添加</li>
+              <li>吸引開始（未使用ウェルは粘着シールで封止し、手でプレートを押し込む）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="step" id="step-14">
+          <div class="step__indicator">4</div>
+          <div class="step__title"><span>残液除去・乾燥</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-14" onchange="onCheckboxChange(this, 'step-14')">
+            <label class="step-checkbox-label" for="chk-14">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <ol>
+              <li>Plasmid Plus 96 plate をキムタオルにタップして残液を除去（持ち替えて複数回タップ）</li>
+              <li>廃液トレイの廃液を捨てる</li>
+              <li>マニフォールドにセットし直し、<strong>10 分間吸引</strong>して乾燥（未使用ウェルは粘着シール、手でプレートを押し込む）</li>
+              <li>【最終タップ】Plasmid Plus 96 plate をキムタオルに再度タップし残液を完全除去</li>
+            </ol>
+            <span class="time-badge" onclick="startTimer(10, '乾燥吸引')" role="button" tabindex="0" aria-label="10分タイマー開始">&#9201; 10 min</span>
+            <div class="alert alert--important">
+              <div class="alert__icon">&#9888;&#65039;</div>
+              <div>
+                <div class="alert__label">超重要</div>
+                最終タップでの残液完全除去はエタノール持ち越し防止のため必須。下流アプリケーション（電気穿孔、トランスフェクション等）の阻害要因となる。
+              </div>
+            </div>
+            <figure class="sop-figure">
+              <img src="images/dried-plate.png" alt="乾燥後の Plasmid Plus 96 plate（横から見た残液）" loading="lazy">
+              <figcaption>乾燥吸引後の Plasmid Plus 96 plate を横から見た様子。ウェル底に液滴が残っていればさらにタップ。</figcaption>
+            </figure>
+          </div>
+        </div>
+
+      </div><!-- /.steps -->
+    </section>
+
+    <hr class="divider">
+
+    <!-- PART 5: 溶出・測定 -->
     <section id="part5" class="part-section">
       <h2 class="part-heading">
         <span class="part-heading__badge">5</span>
-        データ解析ツール
+        溶出・測定
+        <span class="part-time">（約 15 分）</span>
       </h2>
-      <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-2);">
-        y = D + (A &minus; D) / (1 + (x/C)<sup>B</sup>)
-      </p>
 
-      <div class="atool">
+      <div class="steps">
 
-        <!-- 5-1: Blank QC -->
-        <h3>1. ブランク値の確認</h3>
-        <p style="font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-bottom:var(--space-1);">
-          ブランクの蛍光値をペースト（1〜3 値、タブ or 改行区切り）
-        </p>
-        <textarea id="blankPaste" rows="2" style="width:100%;font-family:monospace;font-size:var(--font-size-xs);padding:var(--space-2);border:1px solid var(--color-border);border-radius:var(--border-radius-sm);resize:vertical;" placeholder="例: 1234&#9;1256&#9;1245"></textarea>
-        <div class="param-grid" id="blankResult" style="display:none;">
-          <div class="param-card"><div class="param-card__label">Mean</div><div class="param-card__value" id="blMean">&mdash;</div></div>
-          <div class="param-card"><div class="param-card__label">SD</div><div class="param-card__value" id="blSD">&mdash;</div></div>
-          <div class="param-card" id="blCVCard"><div class="param-card__label">CV%</div><div class="param-card__value" id="blCV">&mdash;</div></div>
-        </div>
-
-        <!-- 5-2: Calibration -->
-        <h3>2. 検量線データ入力</h3>
-        <p style="font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-bottom:var(--space-1);">
-          Excel から蛍光値をペースト（8 行 &times; 1〜3 列）
-        </p>
-        <textarea id="calPaste" rows="9" style="width:100%;font-family:monospace;font-size:var(--font-size-xs);padding:var(--space-2);border:1px solid var(--color-border);border-radius:var(--border-radius-sm);resize:vertical;" placeholder="Pt1 rep1&#9;Pt1 rep2&#9;Pt1 rep3&#10;Pt2 rep1&#9;Pt2 rep2&#9;Pt2 rep3&#10;...（8行）"></textarea>
-        <!-- Parsed preview -->
-        <div id="calPreview" style="display:none;">
-          <div class="table-wrapper" style="margin-top:var(--space-2);">
-            <table>
-              <thead id="calPreviewHead"></thead>
-              <tbody id="calPreviewBody"></tbody>
-            </table>
-          </div>
-        </div>
-        <button class="btn-fit" onclick="runFit()">4PL フィット実行</button>
-
-        <!-- Fit results -->
-        <div id="fitResult" style="display:none;">
-          <div class="param-grid">
-            <div class="param-card"><div class="param-card__label">A (min)</div><div class="param-card__value" id="pA">&mdash;</div></div>
-            <div class="param-card"><div class="param-card__label">B (slope)</div><div class="param-card__value" id="pB">&mdash;</div></div>
-            <div class="param-card"><div class="param-card__label">C (EC50)</div><div class="param-card__value" id="pC">&mdash;</div></div>
-            <div class="param-card"><div class="param-card__label">D (max)</div><div class="param-card__value" id="pD">&mdash;</div></div>
-            <div class="param-card" id="r2Card"><div class="param-card__label">R&sup2;</div><div class="param-card__value" id="pR2">&mdash;</div></div>
-          </div>
-          <div class="chart-container"><canvas id="calChart" width="600" height="360"></canvas></div>
-        </div>
-
-        <!-- 5-3: Sample calculation -->
-        <h3>3. サンプル濃度算出</h3>
-        <p style="font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-bottom:var(--space-1);">
-          Excel からペースト（各行: [名前] 蛍光値1 [蛍光値2] [蛍光値3]）。名前列は省略可。1〜3 replicate 対応。
-        </p>
-        <textarea id="samplePaste" rows="6" style="width:100%;font-family:monospace;font-size:var(--font-size-xs);padding:var(--space-2);border:1px solid var(--color-border);border-radius:var(--border-radius-sm);resize:vertical;" placeholder="Sample1&#9;5678&#9;5690&#10;Sample2&#9;4567&#9;4580&#10;..."></textarea>
-        <button class="btn-fit" onclick="calcSamples()" style="margin-top:var(--space-2);">算出</button>
-        <div id="sampleResult" style="display:none;">
-          <div class="table-wrapper" style="margin-top:var(--space-2);">
-            <table>
-              <thead id="sampleHead"></thead>
-              <tbody id="sampleBody"></tbody>
-            </table>
+        <div class="step" id="step-15">
+          <div class="step__indicator">1</div>
+          <div class="step__title"><span>TE 添加・静置</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-15" onchange="onCheckboxChange(this, 'step-15')">
+            <label class="step-checkbox-label" for="chk-15">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <ol>
+              <li>滅菌チップに交換(プラスミド溶出には滅菌チップを使用)</li>
+              <li>Plasmid Plus 96 plate に TE buffer <strong>80 &micro;L</strong> を<strong>カラム中央に滴下</strong></li>
+              <li>粘着シールで封止</li>
+              <li><strong>2 分間静置</strong></li>
+            </ol>
+            <span class="time-badge" onclick="startTimer(2, 'TE 静置')" role="button" tabindex="0" aria-label="2分タイマー開始">&#9201; 2 min</span>
           </div>
         </div>
 
-      </div><!-- /.atool -->
+        <div class="step" id="step-16">
+          <div class="step__indicator">2</div>
+          <div class="step__title"><span>溶出吸引</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-16" onchange="onCheckboxChange(this, 'step-16')">
+            <label class="step-checkbox-label" for="chk-16">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <p>マニフォールドに下表のとおりセット(受けは新品の丸穴 96 Deep Well Plate)し、吸引開始。</p>
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>セット順序(下から)</th><th>部品</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>キムタオル(下駄代わり + コンタミ防止)</td></tr>
+                  <tr><td>2</td><td>丸穴 96 Deep Well Plate(新品)</td></tr>
+                  <tr><td>3</td><td>トッププレート</td></tr>
+                  <tr><td>4</td><td>Plasmid Plus 96 plate</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert alert--important">
+              <div class="alert__icon">&#9888;&#65039;</div>
+              <div>
+                <div class="alert__label">重要</div>
+                <strong>手でプレートを押し込まないと TE は落ちない</strong>。ポンプ調節とプレート押さえを 2 人で分担するとコンタミリスクを下げられる。
+              </div>
+            </div>
+            <div class="alert alert--caution">
+              <div class="alert__icon">&#9888;&#65039;</div>
+              <div>
+                <div class="alert__label">注意</div>
+                壁面上部に付着した飛沫液はスピンダウンしない(クロスコンタミ防止)。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="step-17">
+          <div class="step__indicator">3</div>
+          <div class="step__title"><span>溶出液の移し替え・ラベリング</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-17" onchange="onCheckboxChange(this, 'step-17')">
+            <label class="step-checkbox-label" for="chk-17">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <ol>
+              <li>溶出液を 1.5 mL チューブ + V 底プレートに分注: V 底プレートに <strong>5 &micro;L</strong>(MINI 96 で分注)、残りを 1.5 mL チューブへ Integra Voyager で移す</li>
+              <li>キャップにラベル: <code>26.4.NN</code>(日付) / <code>HTNNN-N</code>(プラスミド ID) / 余白(後で濃度を記入)</li>
+              <li><strong>4℃ 保存</strong></li>
+            </ol>
+            <div class="alert alert--tip">
+              <div class="alert__icon">&#128161;</div>
+              <div>
+                <div class="alert__label">運用</div>
+                溶出量目安は <strong>50 &micro;L</strong>(80 &micro;L 添加に対する回収量)。V 底プレートは下流の DAPI 蛍光定量に直接使用可能。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="step-18">
+          <div class="step__indicator">4</div>
+          <div class="step__title"><span>NanoDrop 濃度測定</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-18" onchange="onCheckboxChange(this, 'step-18')">
+            <label class="step-checkbox-label" for="chk-18">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <p>1.5 mL チューブから滅菌チップで <strong>1〜2 &micro;L</strong> を NanoDrop に滴下し、濃度・A260/A280・A260/A230 を記録する。</p>
+            <div class="alert alert--caution">
+              <div class="alert__icon">&#9888;&#65039;</div>
+              <div>
+                <div class="alert__label">注意</div>
+                溶出後の最終測定では<strong>滅菌チップ</strong>を使用する(フィルターチップ取り違え注意)。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="step-19">
+          <div class="step__indicator">5</div>
+          <div class="step__title"><span>片付け</span></div>
+          <div class="step__body">
+            <input type="checkbox" class="step-checkbox" id="chk-19" onchange="onCheckboxChange(this, 'step-19')">
+            <label class="step-checkbox-label" for="chk-19">
+              <span class="step-checkbox-label__box">
+                <svg viewBox="0 0 16 16"><polyline points="3.5 8 7 11.5 12.5 5"></polyline></svg>
+              </span>
+              完了
+            </label>
+            <ol>
+              <li>使用済み Plasmid Plus 96 plate を保管(Lot 記録)</li>
+              <li>使用済み TurboFilter 96 plate を保管(Lot 記録)</li>
+              <li>真空マニフォールド・トッププレート・ホースを洗浄</li>
+              <li>廃液トレイの廃液を適切に処理</li>
+              <li>作業台を清掃</li>
+            </ol>
+          </div>
+        </div>
+
+      </div><!-- /.steps -->
     </section>
 
     <hr class="divider">
@@ -1480,23 +1780,12 @@
 
       <div class="table-wrapper">
         <table>
-          <thead><tr><th>項目</th><th>基準</th></tr></thead>
+          <thead><tr><th>項目</th><th>基準</th><th>備考</th></tr></thead>
           <tbody>
-            <tr><td>検量線 R&sup2;</td><td>&ge; 0.99</td></tr>
-            <tr><td>ブランク CV</td><td>&lt; 15%</td></tr>
-            <tr><td>サンプルデュプリケート CV</td><td>&lt; 15%</td></tr>
-            <tr><td>定量値</td><td>Quantifiable Range 内であること</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3 style="font-size: var(--font-size-base); font-weight: 600; margin: var(--space-5) 0 var(--space-2); color: var(--color-primary-dark);">定量可能範囲</h3>
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>区分</th><th>Post-DAPI (ng/&micro;L)</th><th>Pre-DAPI 換算 (ng/&micro;L)</th></tr></thead>
-          <tbody>
-            <tr><td>定量下限</td><td>~2</td><td>~4</td></tr>
-            <tr><td>定量上限</td><td>~80</td><td>~160</td></tr>
+            <tr><td>収量(NanoDrop)</td><td>典型 50〜200 ng/&micro;L &times; 50 &micro;L</td><td>培養量・株により変動</td></tr>
+            <tr><td>A260/A280</td><td>1.85〜1.95</td><td>1.80 未満はタンパク混入の可能性</td></tr>
+            <tr><td>A260/A230</td><td>&gt; 2.0</td><td>低値はエタノール / 塩持ち越しの可能性</td></tr>
+            <tr><td>収量ばらつき</td><td>同条件サンプル間で CV &lt; 30%</td><td>大きな乖離は培養 / 操作起因</td></tr>
           </tbody>
         </table>
       </div>
@@ -1504,24 +1793,48 @@
       <div class="alert alert--important">
         <div class="alert__icon">&#9888;&#65039;</div>
         <div>
-          <div class="alert__label">重要</div>
-          定量値が範囲外の場合は希釈倍率を調整して再測定すること。一般的な QIAvac 精製プラスミド（100〜500 ng/&micro;L）を 10 倍希釈すると 10〜50 ng/&micro;L（Pre-DAPI）となり、定量可能範囲内に収まる。
+          <div class="alert__label">クロスコンタミ警戒</div>
+          溶出量が他より明らかに多い / 少ないウェルは前後の番号と<strong>クロスコンタミの可能性</strong>を疑う。隣接ウェル間での分注、デカント、タップ操作で液が飛散しやすい。
+        </div>
+      </div>
+
+      <div class="sop-figure-grid">
+        <figure class="sop-figure">
+          <img src="images/contamination-before.png" alt="改善前のクロスコンタミ発生例" loading="lazy">
+          <figcaption><strong>改善前</strong>（260421 試験）: 赤枠内のウェルで吐出後の液量が不均一。クロスコンタミ発生のサイン。</figcaption>
+        </figure>
+        <figure class="sop-figure">
+          <img src="images/contamination-after.png" alt="改善後のコンタミ抑制例" loading="lazy">
+          <figcaption><strong>改善後</strong>: キムタオル枚数削減 / well 前面に粘着シール / レギュレーター慎重操作で大幅に改善。</figcaption>
+        </figure>
+      </div>
+
+      <div class="alert alert--tip">
+        <div class="alert__icon">&#128161;</div>
+        <div>
+          <div class="alert__label">コンタミ抑制の運用ポイント（過去試験のフィードバック反映）</div>
+          <ul style="margin: 0; padding-left: var(--space-5);">
+            <li>マニフォールド底のキムタオルは <strong>4 枚重ねから 2 枚</strong>に減らす（吸引圧の安定化）</li>
+            <li>未使用ウェルは <strong>粘着シールを well 前面に貼る</strong>（手で押し込んで密着）</li>
+            <li>レギュレーターは<strong>ゆっくり常圧へ戻す</strong>（急激な圧力変動が飛沫の原因）</li>
+            <li>2 人作業を推奨: 1 人がポンプ調節、1 人がプレート押さえ</li>
+          </ul>
         </div>
       </div>
 
       <div class="alert alert--tip">
         <div class="alert__icon">&#128161;</div>
         <div>
-          <div class="alert__label">ヒント</div>
-          NanoDrop クロスバリデーション推奨。DAPI 法と NanoDrop A260 値の相関を確認し、2 倍以上の乖離がある場合はサンプル品質または検量線に問題がある可能性を検討する。
+          <div class="alert__label">下流アプリケーション</div>
+          DAPI 蛍光法による濃度再測定(V 底プレート 5 &micro;L 利用)でクロスバリデーション推奨。NanoDrop 値と DAPI 値の乖離が大きい場合は、エンドトキシン残存や ssDNA 混入を疑う。
         </div>
       </div>
     </section>
 
     <!-- FOOTER -->
     <footer class="footer">
-      <p>参考：AI-0020 DAPI蛍光法プラスミド濃度測定プロトコル v2.0（Exp01〜Exp05 検討結果反映）</p>
-      <p>SOP v2.0 &middot; 最終更新：2026 年 3 月</p>
+      <p>参考：QIAGEN QIAprep 96 Plus Kit / AI-0027 QIAvac 試験記録(260417, 260421, 260428)</p>
+      <p>SOP v1.0 &middot; 最終更新：2026 年 4 月</p>
       <div class="footer__disclaimer">研究使用限定</div>
     </footer>
 
@@ -1746,269 +2059,6 @@
       var m = Math.floor(seconds / 60);
       var s = seconds % 60;
       return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-    }
-
-
-    /* ============================================================
-       6. 4PL ANALYSIS TOOL
-       ============================================================ */
-    var CAL_CONC = [106.50, 42.60, 17.04, 6.82, 2.73, 1.09, 0.44, 0.17];
-    var fitParams = null;
-
-    /* ---- helpers ---- */
-    function parseRows(text) {
-      return text.trim().split(/\r?\n/).filter(function(l){ return l.trim(); })
-        .map(function(line){ return line.split(/\t/); });
-    }
-    function meanArr(arr) { return arr.reduce(function(a,b){return a+b;},0)/arr.length; }
-    function sdArr(arr) {
-      if (arr.length < 2) return 0;
-      var m = meanArr(arr);
-      return Math.sqrt(arr.reduce(function(s,v){return s+Math.pow(v-m,2);},0)/(arr.length-1));
-    }
-    function cvArr(arr) { var m = meanArr(arr); return m !== 0 ? (sdArr(arr)/Math.abs(m))*100 : 0; }
-
-    /* ---- 4PL core ---- */
-    function fourPL(x, a, b, c, d) {
-      return d + (a - d) / (1 + Math.pow(x / c, b));
-    }
-    function jacCols(x, a, b, c, d) {
-      var t = Math.pow(x / c, b), denom = 1 + t, ln_xc = Math.log(x / c);
-      return [1/denom, (a-d)*(-(t*ln_xc))/(denom*denom), (a-d)*(b*t)/(c*denom*denom), t/denom];
-    }
-    function solveLinear(A, b) {
-      var n = b.length;
-      var M = A.map(function(row, i){ return row.concat([b[i]]); });
-      for (var i = 0; i < n; i++) {
-        var piv = i;
-        for (var r = i+1; r < n; r++) if (Math.abs(M[r][i]) > Math.abs(M[piv][i])) piv = r;
-        if (piv !== i) { var tmp = M[i]; M[i] = M[piv]; M[piv] = tmp; }
-        var div = M[i][i] || 1e-12;
-        for (var k = i; k <= n; k++) M[i][k] /= div;
-        for (var r2 = 0; r2 < n; r2++) if (r2 !== i) {
-          var f = M[r2][i];
-          for (var k2 = i; k2 <= n; k2++) M[r2][k2] -= f * M[i][k2];
-        }
-      }
-      return M.map(function(row){ return row[n]; });
-    }
-    function fourPLFit(x, y) {
-      var n = x.length;
-      var a = Math.min.apply(null, y), d = Math.max.apply(null, y);
-      var c = Math.exp(x.reduce(function(s,v){return s+Math.log(v);},0)/n), b = 1.0, lam = 1e-3;
-      for (var it = 0; it < 500; it++) {
-        var J = [], r = [];
-        for (var i = 0; i < n; i++) { r[i] = y[i] - fourPL(x[i],a,b,c,d); J[i] = jacCols(x[i],a,b,c,d); }
-        var JTJ = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]], JTr = [0,0,0,0];
-        for (var i2 = 0; i2 < n; i2++) for (var p = 0; p < 4; p++) {
-          JTr[p] += J[i2][p]*r[i2];
-          for (var q = 0; q < 4; q++) JTJ[p][q] += J[i2][p]*J[i2][q];
-        }
-        for (var k = 0; k < 4; k++) JTJ[k][k] += lam;
-        var delta = solveLinear(JTJ, JTr);
-        var a2=a+delta[0], b2=b+delta[1], c2=c+delta[2], d2=d+delta[3];
-        if (!(c2>0)||!isFinite(c2)) c2 = Math.max(c*0.5, 1e-12);
-        var sseN=0, sseO=0;
-        for (var i3=0;i3<n;i3++){sseN+=Math.pow(y[i3]-fourPL(x[i3],a2,b2,c2,d2),2);sseO+=Math.pow(y[i3]-fourPL(x[i3],a,b,c,d),2);}
-        if (sseN<sseO){a=a2;b=b2;c=c2;d=d2;lam*=0.7;if(Math.abs(sseO-sseN)/Math.max(1,sseO)<1e-9)break;}
-        else lam*=2.0;
-      }
-      var sse=0, mn=y.reduce(function(s,v){return s+v;},0)/n, sst=0;
-      for(var i4=0;i4<n;i4++){sse+=Math.pow(y[i4]-fourPL(x[i4],a,b,c,d),2);sst+=Math.pow(y[i4]-mn,2);}
-      return {a:a,b:b,c:c,d:d,r2:sst>0?1-sse/sst:NaN};
-    }
-    function fourPLInv(yVal, a, b, c, d) {
-      var eps=1e-12, ylo=Math.min(a,d), yhi=Math.max(a,d);
-      var yy=Math.max(ylo+eps,Math.min(yhi-eps,yVal));
-      if(Math.abs(yy-d)<eps)return Infinity; if(Math.abs(yy-a)<eps)return 0;
-      var S=(a-d)/(yy-d)-1; if(!(S>0))return NaN;
-      return c*Math.pow(S,1.0/b);
-    }
-
-    /* ---- Blank: auto-update on input ---- */
-    document.getElementById('blankPaste').addEventListener('input', updateBlank);
-    function updateBlank() {
-      var text = document.getElementById('blankPaste').value;
-      var vals = text.split(/[\t\r\n,]+/).map(Number).filter(isFinite);
-      var el = document.getElementById('blankResult');
-      if (vals.length < 1) { el.style.display = 'none'; return; }
-      el.style.display = '';
-      var m = meanArr(vals);
-      document.getElementById('blMean').textContent = m.toFixed(1);
-      if (vals.length >= 2) {
-        var sd = sdArr(vals), cv = cvArr(vals);
-        document.getElementById('blSD').textContent = sd.toFixed(1);
-        document.getElementById('blCV').textContent = cv.toFixed(1) + '%';
-        document.getElementById('blCVCard').className = 'param-card' + (cv < 15 ? ' param-card--pass' : ' param-card--fail');
-      } else {
-        document.getElementById('blSD').textContent = '\u2014';
-        document.getElementById('blCV').textContent = 'n=1';
-        document.getElementById('blCVCard').className = 'param-card';
-      }
-    }
-
-    /* ---- Calibration: auto-preview on input ---- */
-    document.getElementById('calPaste').addEventListener('input', previewCal);
-    var calParsed = null; // [{reps:[], mean:, sd:, cv:}]
-    function previewCal() {
-      var rows = parseRows(document.getElementById('calPaste').value);
-      if (rows.length < 1) { document.getElementById('calPreview').style.display='none'; calParsed=null; return; }
-      var nRep = rows[0].length;
-      calParsed = [];
-      for (var i = 0; i < Math.min(rows.length, 8); i++) {
-        var nums = rows[i].map(Number).filter(isFinite);
-        if (nums.length < 1) continue;
-        calParsed.push({ reps: nums, mean: meanArr(nums), sd: nums.length >= 2 ? sdArr(nums) : 0, cv: nums.length >= 2 ? cvArr(nums) : NaN });
-      }
-      if (calParsed.length === 0) { document.getElementById('calPreview').style.display='none'; return; }
-      // Build preview table
-      nRep = Math.max.apply(null, calParsed.map(function(d){ return d.reps.length; }));
-      var hdr = '<tr><th>Point</th><th>Conc.</th>';
-      if (nRep > 1) for (var r = 1; r <= nRep; r++) hdr += '<th>Rep'+r+'</th>';
-      hdr += '<th>Mean</th>';
-      if (nRep > 1) hdr += '<th>CV%</th>';
-      hdr += '</tr>';
-      document.getElementById('calPreviewHead').innerHTML = hdr;
-      var body = '';
-      for (var j = 0; j < calParsed.length; j++) {
-        var d = calParsed[j];
-        body += '<tr><td>Pt'+(j+1)+'</td><td>'+CAL_CONC[j]+'</td>';
-        if (nRep > 1) {
-          for (var k = 0; k < d.reps.length; k++) body += '<td>'+d.reps[k].toFixed(0)+'</td>';
-          for (var pad = d.reps.length; pad < nRep; pad++) body += '<td></td>';
-        }
-        body += '<td><strong>'+d.mean.toFixed(1)+'</strong></td>';
-        if (nRep > 1) body += '<td class="'+(isFinite(d.cv) && d.cv<15?'qc-pass':isFinite(d.cv)?'qc-fail':'')+'">'+
-          (isFinite(d.cv) ? d.cv.toFixed(1)+'%' : '\u2014')+'</td>';
-        body += '</tr>';
-      }
-      document.getElementById('calPreviewBody').innerHTML = body;
-      document.getElementById('calPreview').style.display = '';
-    }
-
-    /* ---- Run 4PL fit ---- */
-    function runFit() {
-      if (!calParsed || calParsed.length < 4) { alert('検量線データを貼り付けてください（4 行以上）'); return; }
-      var x = [], y = [];
-      for (var i = 0; i < calParsed.length; i++) {
-        x.push(CAL_CONC[i]);
-        y.push(calParsed[i].mean);
-      }
-      var res = fourPLFit(x, y);
-      fitParams = res;
-      document.getElementById('pA').textContent = res.a.toFixed(2);
-      document.getElementById('pB').textContent = res.b.toFixed(4);
-      document.getElementById('pC').textContent = res.c.toFixed(4);
-      document.getElementById('pD').textContent = res.d.toFixed(2);
-      document.getElementById('pR2').textContent = res.r2.toFixed(6);
-      document.getElementById('r2Card').className = 'param-card' + (res.r2 >= 0.99 ? ' param-card--pass' : ' param-card--fail');
-      document.getElementById('fitResult').style.display = '';
-      drawChart(x, y, res);
-    }
-
-    /* ---- Chart ---- */
-    function drawChart(xData, yData, p) {
-      var canvas = document.getElementById('calChart');
-      var ctx = canvas.getContext('2d');
-      var dpr = window.devicePixelRatio || 1;
-      var W = 600, H = 360;
-      canvas.width = W * dpr; canvas.height = H * dpr;
-      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
-      ctx.scale(dpr, dpr);
-      var pad = {t:20,r:20,b:50,l:60}, cw = W-pad.l-pad.r, ch = H-pad.t-pad.b;
-      ctx.clearRect(0,0,W,H); ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
-      var xMin=0.1,xMax=200,logMin=Math.log10(xMin),logMax=Math.log10(xMax);
-      var allY=yData.slice();
-      for(var xx=logMin;xx<=logMax;xx+=0.1) allY.push(fourPL(Math.pow(10,xx),p.a,p.b,p.c,p.d));
-      var yMin=Math.min.apply(null,allY)*0.9, yMax=Math.max.apply(null,allY)*1.1;
-      function toX(v){return pad.l+(Math.log10(v)-logMin)/(logMax-logMin)*cw;}
-      function toY(v){return pad.t+ch-(v-yMin)/(yMax-yMin)*ch;}
-      ctx.strokeStyle='#eee';ctx.lineWidth=1;
-      [0.1,1,10,100].forEach(function(xv){var px=toX(xv);ctx.beginPath();ctx.moveTo(px,pad.t);ctx.lineTo(px,pad.t+ch);ctx.stroke();});
-      ctx.strokeStyle='#ccc';ctx.beginPath();ctx.moveTo(pad.l,pad.t+ch);ctx.lineTo(pad.l+cw,pad.t+ch);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,pad.t+ch);ctx.stroke();
-      ctx.fillStyle='#666';ctx.font='11px sans-serif';ctx.textAlign='center';
-      [0.1,1,10,100].forEach(function(xv){ctx.fillText(xv,toX(xv),pad.t+ch+16);});
-      ctx.fillText('Post-DAPI concentration (ng/\u00B5L)',pad.l+cw/2,H-6);
-      // Y-axis tick labels
-      var yTicks = (function(){
-        var range = yMax - yMin;
-        var raw = range / 5;
-        var mag = Math.pow(10, Math.floor(Math.log10(raw)));
-        var nice = [1,2,5,10].map(function(m){return m*mag;});
-        var step = nice.reduce(function(best,s){return Math.abs(s-raw)<Math.abs(best-raw)?s:best;});
-        var ticks = [];
-        var first = Math.ceil(yMin/step)*step;
-        for (var t = first; t <= yMax; t += step) ticks.push(t);
-        return ticks;
-      })();
-      ctx.textAlign='right'; ctx.textBaseline='middle';
-      ctx.strokeStyle='#f0f0f0'; ctx.lineWidth=0.5;
-      yTicks.forEach(function(yv){
-        var py=toY(yv);
-        ctx.fillText(yv >= 1000 ? (yv/1000).toFixed(0)+'k' : yv >= 1 ? yv.toFixed(0) : yv.toFixed(2), pad.l-6, py);
-        ctx.beginPath();ctx.moveTo(pad.l,py);ctx.lineTo(pad.l+cw,py);ctx.stroke();
-      });
-      ctx.save();ctx.translate(14,pad.t+ch/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Fluorescence',0,0);ctx.restore();
-      // Quantifiable range
-      ctx.fillStyle='rgba(46,125,50,0.06)';var qL=toX(2),qR=toX(80);ctx.fillRect(qL,pad.t,qR-qL,ch);
-      ctx.fillStyle='rgba(46,125,50,0.4)';ctx.font='10px sans-serif';ctx.fillText('\u5b9a\u91cf\u53ef\u80fd\u7bc4\u56f2',(qL+qR)/2,pad.t+14);
-      // Curve
-      ctx.strokeStyle='#2E7D32';ctx.lineWidth=2;ctx.beginPath();
-      for(var i=0;i<=200;i++){var lx=logMin+(logMax-logMin)*i/200;var xv2=Math.pow(10,lx);var yv=fourPL(xv2,p.a,p.b,p.c,p.d);var px2=toX(xv2),py2=toY(yv);if(i===0)ctx.moveTo(px2,py2);else ctx.lineTo(px2,py2);}
-      ctx.stroke();
-      // Points
-      ctx.fillStyle='#005005';
-      for(var j=0;j<xData.length;j++){ctx.beginPath();ctx.arc(toX(xData[j]),toY(yData[j]),4,0,Math.PI*2);ctx.fill();}
-    }
-
-    /* ---- Sample: parse + calc ---- */
-    function calcSamples() {
-      if (!fitParams) { alert('\u5148\u306b 4PL \u30d5\u30a3\u30c3\u30c8\u3092\u5b9f\u884c\u3057\u3066\u304f\u3060\u3055\u3044'); return; }
-      var rows = parseRows(document.getElementById('samplePaste').value);
-      if (rows.length === 0) { alert('\u30b5\u30f3\u30d7\u30eb\u30c7\u30fc\u30bf\u3092\u8cbc\u308a\u4ed8\u3051\u3066\u304f\u3060\u3055\u3044'); return; }
-      var p = fitParams;
-      // Detect: first column text or number?
-      var hasName = rows.length > 0 && isNaN(Number(rows[0][0]));
-      var nRep = hasName ? rows[0].length - 1 : rows[0].length;
-      var showCV = nRep >= 2;
-      // Header
-      var hdr = '<tr><th>#</th><th>\u540d\u524d</th>';
-      if (nRep > 1) for (var r = 1; r <= nRep; r++) hdr += '<th>Rep'+r+'</th>';
-      hdr += '<th>\u86cd\u5149\u5024</th>';
-      if (showCV) hdr += '<th>CV%</th>';
-      hdr += '<th>Post-DAPI</th><th>\u539f\u6db2 (ng/\u00B5L)</th></tr>';
-      document.getElementById('sampleHead').innerHTML = hdr;
-      var body = '';
-      for (var i = 0; i < rows.length; i++) {
-        var cols = rows[i];
-        var name, vals;
-        if (hasName) { name = cols[0]; vals = cols.slice(1).map(Number).filter(isFinite); }
-        else { name = 'S'+(i+1); vals = cols.map(Number).filter(isFinite); }
-        if (vals.length < 1) continue;
-        var m = meanArr(vals);
-        var cv = vals.length >= 2 ? cvArr(vals) : NaN;
-        var postDAPI = fourPLInv(m, p.a, p.b, p.c, p.d);
-        var orig = (isFinite(postDAPI) && postDAPI > 0) ? postDAPI * 2 * 10 : NaN;
-        var inRange = isFinite(postDAPI) && postDAPI >= 2 && postDAPI <= 80;
-        body += '<tr><td>'+(i+1)+'</td><td>'+name+'</td>';
-        if (nRep > 1) {
-          for (var k = 0; k < vals.length; k++) body += '<td>'+vals[k].toFixed(0)+'</td>';
-          for (var pad2 = vals.length; pad2 < nRep; pad2++) body += '<td></td>';
-        }
-        body += '<td><strong>'+m.toFixed(1)+'</strong></td>';
-        if (showCV) body += '<td class="'+(isFinite(cv)?(cv<15?'qc-pass':'qc-fail'):'')+'">'+
-          (isFinite(cv) ? cv.toFixed(1)+'%' : '\u2014')+'</td>';
-        if (isFinite(postDAPI) && postDAPI > 0) {
-          body += '<td class="'+(inRange?'qc-pass':'qc-warn')+'">'+postDAPI.toFixed(2)+'</td>';
-          body += '<td class="'+(inRange?'qc-pass':'qc-warn')+'">'+orig.toFixed(1)+'</td>';
-        } else {
-          body += '<td class="qc-fail">OUT</td><td class="qc-fail">OUT</td>';
-        }
-        body += '</tr>';
-      }
-      document.getElementById('sampleBody').innerHTML = body;
-      document.getElementById('sampleResult').style.display = '';
     }
 
 
